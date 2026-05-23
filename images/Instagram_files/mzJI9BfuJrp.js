@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("PolarisEntityQRModalLazy.react",["CometPlaceholder.react","JSResourceForInteraction","lazyLoadComponent","react","react-compiler-runtime"],(function(t,n,r,o,a,i,l){"use strict";var e,s=e||(e=o("react")),u=r("lazyLoadComponent")(r("JSResourceForInteraction")("PolarisEntityQRModal.react").__setRef("PolarisEntityQRModalLazy.react"));function c(e){var t=o("react-compiler-runtime").c(2),n;return t[0]!==e?(n=s.jsx(r("CometPlaceholder.react"),{fallback:null,name:i.id,children:s.jsx(u,babelHelpers.extends({},e))}),t[0]=e,t[1]=n):n=t[1],n}l.default=c}),98);

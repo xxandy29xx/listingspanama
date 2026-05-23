@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panama Listings — Propiedades Premium en Panamá</title>
+  <meta name="description" content="Panama Listings — Propiedades en venta y alquiler en Panamá. Apartamentos, casas y terrenos en Ciudad de Panamá.">
+  <meta name="keywords" content="propiedades panama, bienes raices panama, apartamentos panama, casas panama, terrenos panama">
+  <meta name="author" content="Panama Listings">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Panama Listings — Propiedades en Panamá">
+  <meta property="og:description" content="Encuentra tu propiedad ideal en Panamá.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_PA">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Panama Listings","telephone":"+507-834-7509","email":"inmobiliaria@latamdigi.com","address":{"@type":"PostalAddress","addressLocality":"Ciudad de Panamá","addressCountry":"PA"}}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/favicon.png">
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    /* ============================================================
+       VARIABLES — Blanco + Navy #1e3058
+    ============================================================ */
+    :root {
+      --bg:         #ffffff;
+      --surface:    #f7f8fa;
+      --card:       #ffffff;
+      --brand:      #1e3058;
+      --brand-mid:  #26407a;
+      --brand-light:#eef1f7;
+      --accent:     #1e3058;
+      --text:       #1a2332;
+      --muted:      #6b7a8d;
+      --border:     #e4e8ef;
+      --white:      #ffffff;
+      --whatsapp:   #25D366;
+      --radius:     12px;
+      --radius-lg:  20px;
+      --shadow-sm:  0 2px 12px rgba(30,48,88,0.07);
+      --shadow-md:  0 8px 40px rgba(30,48,88,0.12);
+      --shadow-lg:  0 20px 60px rgba(30,48,88,0.16);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family:'Inter', system-ui, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    img { max-width:100%; display:block; }
+    a   { color:inherit; text-decoration:none; }
+    ul  { list-style:none; }
+
+    /* ============================================================
+       LOADING SCREEN
+    ============================================================ */
+    #loading-screen {
+      position:fixed; inset:0; background:var(--brand);
+      z-index:99999; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:1.5rem;
+      transition:opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #loading-screen.hidden { opacity:0; visibility:hidden; }
+    .loader-logo {
+      font-family:'Playfair Display', serif;
+      font-size:1.8rem; font-weight:700; color:#fff;
+      letter-spacing:6px; text-transform:uppercase;
+    }
+    .loader-logo span { opacity:0.55; font-weight:400; }
+    .loader-bar { width:180px; height:2px; background:rgba(255,255,255,0.2); border-radius:2px; overflow:hidden; }
+    .loader-fill { height:100%; background:#fff; border-radius:2px; animation:lfill 1.8s ease forwards; }
+    @keyframes lfill { from{width:0} to{width:100%} }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    #navbar {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      padding:1.2rem 2rem; transition:var(--transition);
+    }
+    #navbar.scrolled {
+      padding:0.8rem 2rem;
+      background:rgba(255,255,255,0.96);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      box-shadow:var(--shadow-sm);
+    }
+    .nav-inner {
+      max-width:1400px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:2rem;
+    }
+    .nav-logo { display:flex; align-items:center; gap:11px; }
+    .nav-logo-icon { width:52px; height:52px; border-radius:50%; object-fit:cover; overflow:hidden; display:block; }
+    .nav-logo-text .t1 {
+      font-family:'Playfair Display', serif;
+      font-size:1.15rem; font-weight:700; color:var(--white);
+      letter-spacing:1.5px; line-height:1;
+    }
+    #navbar.scrolled .nav-logo-text .t1 { color:var(--brand); }
+    .nav-logo-text .t2 {
+      font-size:0.6rem; color:rgba(255,255,255,0.55);
+      letter-spacing:5px; line-height:1; margin-top:3px; text-transform:uppercase;
+    }
+    #navbar.scrolled .nav-logo-text .t2 { color:var(--muted); }
+    .nav-links { display:flex; gap:2.5rem; align-items:center; }
+    .nav-links a {
+      font-size:0.88rem; font-weight:500; color:rgba(255,255,255,0.8);
+      letter-spacing:0.3px; transition:color var(--transition); position:relative;
+    }
+    #navbar.scrolled .nav-links a { color:var(--muted); }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0;
+      width:0; height:1.5px; background:var(--brand); transition:width var(--transition);
+    }
+    .nav-links a:hover { color:var(--white); }
+    #navbar.scrolled .nav-links a:hover { color:var(--brand); }
+    .nav-links a:hover::after { width:100%; }
+    .nav-cta {
+      background:transparent; color:var(--white);
+      padding:0.55rem 1.5rem; border-radius:6px;
+      font-size:0.85rem; font-weight:700; letter-spacing:0.3px;
+      border:2px solid rgba(255,255,255,0.75); transition:var(--transition); cursor:pointer;
+    }
+    #navbar.scrolled .nav-cta { background:var(--brand); color:var(--white); border-color:var(--brand); }
+    .nav-cta:hover { opacity:0.88; transform:translateY(-1px); }
+    .nav-ig { color:rgba(255,255,255,0.85); display:flex; align-items:center; transition:var(--transition); }
+    .nav-ig:hover { color:#fff; transform:translateY(-1px); opacity:0.88; }
+    #navbar.scrolled .nav-ig { color:var(--brand-mid); }
+    #navbar.scrolled .nav-ig:hover { color:var(--brand); }
+    .nav-mobile-toggle {
+      display:none; flex-direction:column; gap:5px;
+      background:none; border:none; padding:4px; cursor:pointer;
+    }
+    .nav-mobile-toggle span {
+      display:block; width:22px; height:2px;
+      background:var(--white); border-radius:2px;
+    }
+    #navbar.scrolled .nav-mobile-toggle span { background:var(--brand); }
+    @media(max-width:900px){ .nav-links{display:none;} .nav-mobile-toggle{display:flex;} }
+
+    /* Mobile menu */
+    #mobile-menu {
+      display:none; position:fixed; inset:0; z-index:999;
+      background:var(--brand); flex-direction:column;
+      align-items:center; justify-content:center; gap:2.5rem;
+    }
+    #mobile-menu.open { display:flex; }
+    #mobile-menu a {
+      font-family:'Playfair Display',serif; font-size:2rem;
+      color:rgba(255,255,255,0.85); transition:color 0.2s;
+    }
+    #mobile-menu a:hover { color:#fff; }
+    #mobile-menu-close {
+      position:absolute; top:1.5rem; right:2rem; font-size:2rem;
+      background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer;
+    }
+
+    /* ============================================================
+       HERO — fondo oscuro navy, transición a blanco
+    ============================================================ */
+    #hero {
+      position:relative; width:100%; height:100vh; min-height:640px;
+      display:flex; align-items:center; justify-content:center; overflow:hidden;
+    }
+    #hero-bg { position:absolute; inset:0; will-change:transform; }
+    .hero-skyline { position:absolute; inset:0; width:100%; height:100%; }
+    .hero-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(
+        to bottom,
+        rgba(5,12,28,0.55) 0%,
+        rgba(5,12,28,0.40) 35%,
+        rgba(5,12,28,0.55) 72%,
+        rgba(5,12,28,0.88) 92%,
+        #ffffff 100%
+      );
+    }
+    .hero-content {
+      position:relative; z-index:2;
+      text-align:center; padding:0 1.5rem; max-width:860px;
+    }
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:0.72rem; letter-spacing:5px; color:rgba(255,255,255,0.6);
+      text-transform:uppercase; margin-bottom:1.4rem;
+    }
+    .hero-eyebrow::before,.hero-eyebrow::after {
+      content:''; display:block; width:28px; height:1px; background:rgba(255,255,255,0.3);
+    }
+    .hero-title {
+      font-family:'Playfair Display', serif;
+      font-size:clamp(2.8rem,7vw,5.5rem);
+      font-weight:700; line-height:1.1; color:#fff; margin-bottom:1.4rem;
+    }
+    .hero-title em { font-style:italic; color:#a8c4e0; }
+    .hero-subtitle {
+      font-size:clamp(1rem,2vw,1.15rem); color:rgba(255,255,255,0.68);
+      font-weight:300; margin-bottom:2.8rem; line-height:1.7;
+    }
+    .hero-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .btn-primary {
+      background:var(--brand); color:#fff;
+      padding:0.9rem 2.4rem; border-radius:6px;
+      font-weight:700; font-size:0.9rem;
+      border:none; cursor:pointer;
+      transition:var(--transition); display:inline-block;
+    }
+    .btn-primary:hover { background:var(--brand-mid); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+    .btn-outline-white {
+      background:transparent; color:#fff;
+      padding:0.9rem 2.4rem; border-radius:6px;
+      font-weight:600; font-size:0.9rem;
+      border:1.5px solid rgba(255,255,255,0.4);
+      cursor:pointer; transition:var(--transition); display:inline-block;
+    }
+    .btn-outline-white:hover { border-color:#fff; background:rgba(255,255,255,0.08); transform:translateY(-2px); }
+    .hero-scroll {
+      position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+      z-index:2; display:flex; flex-direction:column; align-items:center; gap:8px;
+      color:rgba(255,255,255,0.4); font-size:0.68rem; letter-spacing:3px; text-transform:uppercase;
+    }
+    .scroll-line {
+      width:1px; height:44px;
+      background:linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation:sdrop 2s ease-in-out infinite;
+    }
+    @keyframes sdrop {
+      0%   { opacity:0; transform:scaleY(0); transform-origin:top; }
+      50%  { opacity:1; transform:scaleY(1); }
+      100% { opacity:0; transform:scaleY(0); transform-origin:bottom; }
+    }
+
+    /* ============================================================
+       SEARCH BAR
+    ============================================================ */
+    #search-bar { padding:0 2rem 3rem; margin-top:-40px; position:relative; z-index:10; }
+    .search-card {
+      max-width:1060px; margin:0 auto;
+      background:#fff; border-radius:var(--radius-lg);
+      padding:2rem; box-shadow:var(--shadow-lg);
+      border:1px solid var(--border);
+    }
+    .search-form {
+      display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto;
+      gap:1rem; align-items:end;
+    }
+    .sf-group { display:flex; flex-direction:column; gap:5px; }
+    .sf-group label { font-size:0.68rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+    .sf-group input,.sf-group select {
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:8px; padding:0.75rem 1rem; color:var(--text);
+      font-family:'Inter',sans-serif; font-size:0.9rem;
+      transition:border-color 0.2s; -webkit-appearance:none;
+    }
+    .sf-group input::placeholder { color:#b0b8c4; }
+    .sf-group input:focus,.sf-group select:focus { outline:none; border-color:var(--brand); }
+    .btn-search {
+      background:var(--brand); color:#fff; border:none;
+      padding:0.75rem 2rem; border-radius:8px;
+      font-weight:700; font-size:0.9rem; cursor:pointer;
+      transition:var(--transition); white-space:nowrap;
+    }
+    .btn-search:hover { background:var(--brand-mid); transform:translateY(-1px); }
+    @media(max-width:900px){ .search-form{grid-template-columns:1fr 1fr;} .btn-search{grid-column:1/-1;} }
+    @media(max-width:560px){ .search-form{grid-template-columns:1fr;} }
+
+    /* ============================================================
+       SHARED
+    ============================================================ */
+    .section-label {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:0.68rem; letter-spacing:4px; color:var(--brand);
+      text-transform:uppercase; margin-bottom:0.8rem;
+    }
+    .section-label::before { content:''; display:block; width:20px; height:1.5px; background:var(--brand); }
+    .section-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.8rem,4vw,2.6rem); color:var(--text); line-height:1.2; margin-bottom:0.8rem;
+    }
+    .section-desc { color:var(--muted); font-size:0.97rem; line-height:1.7; max-width:500px; }
+
+    /* ============================================================
+       FILTERS
+    ============================================================ */
+    #filters { padding:0 2rem 2.5rem; }
+    .filters-inner { max-width:1400px; margin:0 auto; }
+    .filter-tabs { display:flex; gap:0.6rem; flex-wrap:wrap; }
+    .filter-tab {
+      background:#fff; border:1.5px solid var(--border);
+      color:var(--muted); padding:0.5rem 1.3rem; border-radius:30px;
+      font-size:0.83rem; font-weight:500; cursor:pointer;
+      transition:var(--transition); font-family:'Inter',sans-serif;
+    }
+    .filter-tab:hover,.filter-tab.active {
+      border-color:var(--brand); color:var(--brand);
+      background:var(--brand-light);
+    }
+
+    /* ============================================================
+       PROPERTIES
+    ============================================================ */
+    #propiedades { padding:1rem 2rem 5rem; }
+    .properties-inner { max-width:1400px; margin:0 auto; }
+    .props-header {
+      display:flex; align-items:flex-end; justify-content:space-between;
+      margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem;
+    }
+    .props-count { font-size:0.82rem; color:var(--muted); }
+    .props-count strong { color:var(--brand); }
+    .props-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:2rem;
+    }
+    @media(max-width:800px){ .props-grid{grid-template-columns:1fr;} }
+
+    /* Property Card */
+    .prop-card {
+      background:#fff; border:1.5px solid var(--border);
+      border-radius:var(--radius-lg); overflow:hidden;
+      transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s, border-color 0.35s;
+      position:relative;
+    }
+    .prop-card:hover {
+      transform:translateY(-8px);
+      box-shadow:var(--shadow-lg);
+      border-color:rgba(30,48,88,0.15);
+    }
+    .compare-check {
+      position:absolute; top:1rem; left:1rem; z-index:4;
+      display:flex; align-items:center; gap:5px;
+      background:rgba(255,255,255,0.92); backdrop-filter:blur(8px);
+      border:1.5px solid var(--border); border-radius:30px;
+      padding:4px 10px 4px 6px; font-size:0.72rem; color:var(--muted);
+      cursor:pointer; transition:var(--transition);
+    }
+    .compare-check input { accent-color:var(--brand); cursor:pointer; }
+    .compare-check:hover { border-color:var(--brand); color:var(--brand); }
+
+    .prop-image-wrap { position:relative; height:250px; overflow:hidden; }
+    .prop-image-wrap img {
+      width:100%; height:100%; object-fit:cover;
+      transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .prop-card:hover .prop-image-wrap img { transform:scale(1.05); }
+
+    .prop-badge-type {
+      position:absolute; bottom:1rem; left:1rem;
+      background:var(--brand); color:#fff;
+      font-size:0.68rem; font-weight:700; letter-spacing:2px;
+      text-transform:uppercase; padding:5px 12px; border-radius:4px;
+    }
+    .prop-badge-type.alquiler {
+      background:rgba(37,211,102,0.15); color:#1a7a42;
+      border:1px solid rgba(37,211,102,0.4);
+    }
+    .prop-price-tag {
+      position:absolute; top:1rem; right:1rem;
+      background:rgba(255,255,255,0.95); backdrop-filter:blur(8px);
+      border:1.5px solid var(--border); color:var(--brand);
+      font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700;
+      padding:7px 14px; border-radius:8px;
+    }
+    .prop-lightbox-btn {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background:transparent; transition:background 0.3s; border:none; width:100%; cursor:pointer;
+    }
+    .prop-lightbox-btn span {
+      background:var(--brand); color:#fff;
+      padding:7px 18px; border-radius:30px;
+      font-size:0.76rem; font-weight:700; letter-spacing:0.5px;
+      opacity:0; transform:translateY(8px); transition:var(--transition);
+    }
+    .prop-card:hover .prop-lightbox-btn { background:rgba(30,48,88,0.18); }
+    .prop-card:hover .prop-lightbox-btn span { opacity:1; transform:translateY(0); }
+
+    .prop-body { padding:1.5rem; }
+    .prop-title {
+      font-family:'Playfair Display',serif;
+      font-size:1.2rem; color:var(--text); margin-bottom:0.4rem; line-height:1.3;
+    }
+    .prop-location {
+      font-size:0.83rem; color:var(--muted);
+      margin-bottom:1.1rem; display:flex; align-items:center; gap:5px;
+    }
+    .prop-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.3rem; }
+    .prop-tag {
+      background:var(--brand-light); color:var(--brand);
+      font-size:0.72rem; font-weight:500; padding:3px 10px; border-radius:30px;
+    }
+    .prop-footer {
+      display:flex; align-items:center; justify-content:space-between; gap:1rem;
+      padding-top:1.1rem; border-top:1.5px solid var(--border);
+    }
+    .prop-phone { font-size:0.88rem; font-weight:600; color:var(--text); }
+    .prop-actions { display:flex; gap:0.5rem; position:relative; }
+    .btn-wa {
+      background:var(--whatsapp); color:#fff; border:none;
+      padding:0.5rem 1rem; border-radius:6px;
+      font-size:0.8rem; font-weight:700; cursor:pointer;
+      transition:var(--transition); display:flex; align-items:center; gap:6px;
+    }
+    .btn-wa:hover { background:#1da851; transform:translateY(-1px); }
+    .btn-wa svg { width:16px; height:16px; flex-shrink:0; }
+
+    .btn-share {
+      background:var(--surface); border:1.5px solid var(--border); color:var(--muted);
+      padding:0.5rem 0.75rem; border-radius:6px; font-size:0.85rem;
+      cursor:pointer; transition:var(--transition);
+    }
+    .btn-share:hover { border-color:var(--brand); color:var(--brand); }
+    .share-popup {
+      display:none; position:absolute; bottom:44px; right:0;
+      background:#fff; border:1.5px solid var(--border);
+      border-radius:10px; padding:0.5rem; gap:0.3rem;
+      z-index:50; box-shadow:var(--shadow-md);
+    }
+    .share-popup.open { display:flex; }
+    .share-popup a {
+      font-size:0.75rem; color:var(--muted); padding:5px 10px;
+      border-radius:6px; white-space:nowrap; cursor:pointer; transition:background 0.2s, color 0.2s;
+    }
+    .share-popup a:hover { background:var(--brand-light); color:var(--brand); }
+
+    /* ============================================================
+       CTA SECTION
+    ============================================================ */
+    #cta {
+      background:var(--brand); padding:7rem 2rem; text-align:center;
+      position:relative; overflow:hidden;
+    }
+    #cta::before {
+      content:''; position:absolute; top:-60px; right:-60px;
+      width:400px; height:400px;
+      background:rgba(255,255,255,0.04); border-radius:50%;
+      pointer-events:none;
+    }
+    #cta::after {
+      content:''; position:absolute; bottom:-80px; left:-40px;
+      width:300px; height:300px;
+      background:rgba(255,255,255,0.03); border-radius:50%;
+      pointer-events:none;
+    }
+    .cta-inner { position:relative; max-width:640px; margin:0 auto; }
+    .cta-inner h2 {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2rem,4vw,2.8rem); color:#fff;
+      margin-bottom:1rem; line-height:1.2;
+    }
+    .cta-inner h2 em { font-style:italic; color:rgba(255,255,255,0.72); }
+    .cta-inner p { color:rgba(255,255,255,0.65); margin-bottom:2.5rem; font-size:1.05rem; }
+    .cta-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .btn-white {
+      background:#fff; color:var(--brand);
+      padding:0.9rem 2.4rem; border-radius:6px;
+      font-weight:700; font-size:0.9rem; border:none; cursor:pointer;
+      transition:var(--transition); display:inline-block;
+    }
+    .btn-white:hover { opacity:0.9; transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+    .btn-outline-light {
+      background:transparent; color:#fff;
+      padding:0.9rem 2.4rem; border-radius:6px;
+      font-weight:600; font-size:0.9rem;
+      border:1.5px solid rgba(255,255,255,0.35);
+      cursor:pointer; transition:var(--transition); display:inline-block;
+    }
+    .btn-outline-light:hover { border-color:#fff; background:rgba(255,255,255,0.08); transform:translateY(-2px); }
+
+    /* ============================================================
+       CONTACT
+    ============================================================ */
+    #contact { padding:6rem 2rem; background:var(--surface); border-top:1.5px solid var(--border); }
+    .contact-inner {
+      max-width:1060px; margin:0 auto;
+      display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start;
+    }
+    @media(max-width:800px){ .contact-inner{grid-template-columns:1fr;gap:3rem;} }
+    .contact-info-item {
+      display:flex; align-items:center; gap:1rem;
+      padding:1.1rem 0; border-bottom:1.5px solid var(--border);
+    }
+    .contact-info-item:last-child { border-bottom:none; }
+    .ci-icon {
+      width:42px; height:42px; background:var(--brand-light);
+      border:1.5px solid var(--border); border-radius:10px;
+      display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
+    }
+    .ci-label { font-size:0.68rem; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:2px; }
+    .ci-value { font-size:0.93rem; color:var(--text); font-weight:600; }
+    .ci-value:hover { color:var(--brand); }
+
+    .contact-form { display:flex; flex-direction:column; gap:1rem; }
+    .cf-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media(max-width:500px){ .cf-row{grid-template-columns:1fr;} }
+    .cf-group { display:flex; flex-direction:column; gap:5px; }
+    .cf-group label { font-size:0.68rem; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+    .cf-group input,.cf-group textarea,.cf-group select {
+      background:#fff; border:1.5px solid var(--border);
+      border-radius:8px; padding:0.8rem 1rem; color:var(--text);
+      font-family:'Inter',sans-serif; font-size:0.9rem;
+      transition:border-color 0.2s; resize:vertical;
+    }
+    .cf-group input::placeholder,.cf-group textarea::placeholder { color:#c0c8d0; }
+    .cf-group input:focus,.cf-group textarea:focus,.cf-group select:focus {
+      outline:none; border-color:var(--brand); background:#fff;
+    }
+    .cf-group textarea { min-height:120px; }
+    .btn-send {
+      background:var(--brand); color:#fff; border:none;
+      padding:0.9rem 2rem; border-radius:8px;
+      font-weight:700; font-size:0.9rem; cursor:pointer;
+      transition:var(--transition); align-self:flex-start;
+    }
+    .btn-send:hover { background:var(--brand-mid); transform:translateY(-2px); }
+    .form-success {
+      display:none; background:#f0faf4; border:1.5px solid #a8ddb8;
+      border-radius:8px; padding:1rem 1.5rem; color:#2a7a4a;
+      font-size:0.9rem; text-align:center;
+    }
+    .form-success.visible { display:block; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background:var(--brand); color:rgba(255,255,255,0.8);
+      padding:5rem 2rem 2.5rem;
+    }
+    .footer-inner { max-width:1400px; margin:0 auto; }
+    .footer-top {
+      display:grid; grid-template-columns:2fr 1fr 1fr 1fr;
+      gap:4rem; margin-bottom:4rem;
+    }
+    @media(max-width:900px){ .footer-top{grid-template-columns:1fr 1fr;gap:2.5rem;} }
+    @media(max-width:500px){ .footer-top{grid-template-columns:1fr;} }
+    .footer-brand-name {
+      font-family:'Playfair Display',serif; font-size:1.3rem; color:#fff;
+      letter-spacing:3px; margin-bottom:1rem;
+    }
+    .footer-brand-desc { font-size:0.87rem; color:rgba(255,255,255,0.55); line-height:1.8; max-width:280px; }
+    .footer-col h4 {
+      font-size:0.65rem; letter-spacing:3px; text-transform:uppercase;
+      color:rgba(255,255,255,0.4); margin-bottom:1.4rem;
+    }
+    .footer-col ul { display:flex; flex-direction:column; gap:0.7rem; }
+    .footer-col a { font-size:0.87rem; color:rgba(255,255,255,0.6); transition:color 0.2s; }
+    .footer-col a:hover { color:#fff; }
+    .footer-divider { border:none; border-top:1px solid rgba(255,255,255,0.1); margin-bottom:1.5rem; }
+    .footer-bottom {
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+    }
+    .footer-copy { font-size:0.8rem; color:rgba(255,255,255,0.3); }
+    .footer-social { display:flex; gap:0.75rem; }
+    .footer-social a {
+      width:34px; height:34px; border:1px solid rgba(255,255,255,0.15);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:0.85rem; color:rgba(255,255,255,0.5); transition:var(--transition);
+    }
+    .footer-social a:hover { border-color:rgba(255,255,255,0.4); color:#fff; background:rgba(255,255,255,0.08); }
+
+    /* ============================================================
+       WHATSAPP FLOAT — logo oficial SVG
+    ============================================================ */
+    #wa-float {
+      position:fixed; bottom:1.8rem; right:1.8rem; z-index:700;
+      width:58px; height:58px; background:var(--whatsapp);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 20px rgba(37,211,102,0.45);
+      transition:transform 0.3s, box-shadow 0.3s;
+    }
+    #wa-float:hover { transform:scale(1.1); box-shadow:0 8px 32px rgba(37,211,102,0.6); }
+    #wa-float svg { width:32px; height:32px; }
+    #wa-float-tip {
+      position:absolute; right:68px; top:50%; transform:translateY(-50%);
+      background:var(--text); color:#fff; font-size:0.78rem; font-weight:600;
+      padding:5px 12px; border-radius:6px; white-space:nowrap;
+      opacity:0; pointer-events:none; transition:opacity 0.2s;
+    }
+    #wa-float:hover #wa-float-tip { opacity:1; }
+
+    /* ============================================================
+       LIGHTBOX
+    ============================================================ */
+    #lightbox {
+      display:none; position:fixed; inset:0; z-index:9000;
+      background:rgba(0,0,0,0.94); backdrop-filter:blur(10px);
+      align-items:center; justify-content:center;
+      flex-direction:column; gap:1.5rem; padding:2rem;
+    }
+    #lightbox.open { display:flex; }
+    #lightbox-img {
+      max-width:860px; width:100%; max-height:72vh;
+      object-fit:contain; border-radius:12px;
+    }
+    #lightbox-title { font-family:'Playfair Display',serif; font-size:1.3rem; color:#fff; }
+    #lightbox-close {
+      position:absolute; top:1.5rem; right:2rem; font-size:2rem;
+      background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; z-index:2;
+    }
+    #lightbox-close:hover { color:#fff; }
+    #lb-prev, #lb-next {
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:rgba(255,255,255,0.12); border:none; color:#fff;
+      font-size:2.8rem; line-height:1; padding:0.2rem 0.9rem;
+      cursor:pointer; border-radius:8px; transition:background 0.2s;
+      display:none; z-index:2;
+    }
+    #lb-prev { left:1.2rem; }
+    #lb-next { right:1.2rem; }
+    #lb-prev:hover, #lb-next:hover { background:rgba(255,255,255,0.25); }
+    #lb-footer { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; justify-content:center; }
+    #lb-counter { font-size:0.82rem; color:rgba(255,255,255,0.45); letter-spacing:1px; }
+
+    /* ============================================================
+       COMPARATOR
+    ============================================================ */
+    #compare-bar {
+      position:fixed; bottom:0; left:0; right:0; z-index:800;
+      background:rgba(255,255,255,0.97); backdrop-filter:blur(16px);
+      border-top:1.5px solid var(--border);
+      padding:1rem 2rem; display:none;
+      align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap;
+      box-shadow:0 -4px 24px rgba(30,48,88,0.1);
+    }
+    #compare-bar.visible { display:flex; }
+    .compare-bar-info { font-size:0.88rem; color:var(--muted); }
+    .compare-bar-info strong { color:var(--brand); }
+    .btn-compare-now {
+      background:var(--brand); color:#fff; border:none;
+      padding:0.6rem 1.8rem; border-radius:6px;
+      font-weight:700; font-size:0.88rem; cursor:pointer; transition:var(--transition);
+    }
+    .btn-compare-now:hover { background:var(--brand-mid); }
+    .btn-compare-clear {
+      background:transparent; border:1.5px solid var(--border); color:var(--muted);
+      padding:0.6rem 1.2rem; border-radius:6px; font-size:0.85rem; cursor:pointer; transition:var(--transition);
+    }
+    .btn-compare-clear:hover { border-color:#e74c3c; color:#e74c3c; }
+
+    #compare-modal {
+      display:none; position:fixed; inset:0; z-index:9500;
+      background:rgba(0,0,0,0.9); backdrop-filter:blur(10px);
+      overflow-y:auto; padding:3rem 1.5rem;
+    }
+    #compare-modal.open { display:block; }
+    .compare-modal-inner { max-width:1060px; margin:0 auto; background:#fff; border-radius:var(--radius-lg); overflow:hidden; }
+    .compare-modal-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.5rem 2rem; background:var(--brand);
+    }
+    .compare-modal-header h2 { font-family:'Playfair Display',serif; font-size:1.5rem; color:#fff; }
+    #compare-modal-close { font-size:1.8rem; background:none; border:none; color:rgba(255,255,255,0.6); cursor:pointer; }
+    #compare-modal-close:hover { color:#fff; }
+    .compare-table { width:100%; border-collapse:collapse; }
+    .compare-table th,.compare-table td {
+      padding:0.9rem 1.2rem; text-align:left; border-bottom:1px solid var(--border); vertical-align:top;
+    }
+    .compare-table th { background:var(--surface); color:var(--brand); font-size:0.72rem; letter-spacing:2px; text-transform:uppercase; width:140px; }
+    .compare-table td { background:#fff; color:var(--text); font-size:0.9rem; }
+    .compare-table img { width:100%; height:150px; object-fit:cover; border-radius:8px; }
+
+    /* ============================================================
+       SCROLL ANIMATIONS
+    ============================================================ */
+    .reveal {
+      opacity:0; transform:translateY(30px);
+      transition:opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1);
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-left {
+      opacity:0; transform:translateX(-36px);
+      transition:opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal-left.visible { opacity:1; transform:translateX(0); }
+    .d1{transition-delay:.1s!important} .d2{transition-delay:.2s!important}
+    .d3{transition-delay:.3s!important} .d4{transition-delay:.4s!important}
+
+    /* Calc + map responsive */
+    @media(max-width:800px){
+      #calculadora > div > div { grid-template-columns:1fr !important; gap:2.5rem !important; }
+    }
+    /* Leaflet popup tweak */
+    .leaflet-popup-content-wrapper {
+      border-radius:12px !important; box-shadow:0 8px 32px rgba(30,48,88,0.18) !important;
+      border:1.5px solid #e4e8ef !important;
+    }
+    .leaflet-popup-tip { background:#fff !important; }
+
+    /* ============================================================
+       PROPERTY DETAIL MODAL  — 2-col, no external scroll
+    ============================================================ */
+    #prop-modal {
+      display:none; position:fixed; inset:0; z-index:8800;
+      background:rgba(10,20,40,0.88); backdrop-filter:blur(12px);
+      align-items:center; justify-content:center; padding:1.2rem;
+    }
+    #prop-modal.open { display:flex; }
+    .pm-inner {
+      display:flex; flex-direction:row;
+      background:#fff; border-radius:20px;
+      width:100%; max-width:960px; max-height:92vh;
+      overflow:hidden; position:relative;
+      box-shadow:0 32px 80px rgba(10,20,40,0.45);
+    }
+    #pm-close {
+      position:absolute; top:0.75rem; right:0.85rem; z-index:10;
+      background:rgba(0,0,0,0.48); border:none; color:#fff;
+      width:34px; height:34px; border-radius:50%;
+      font-size:1rem; cursor:pointer; display:flex;
+      align-items:center; justify-content:center; transition:background 0.2s;
+    }
+    #pm-close:hover { background:rgba(0,0,0,0.8); }
+
+    /* ── LEFT: gallery column ── */
+    .pm-gallery {
+      flex:0 0 54%; display:flex; flex-direction:column;
+      position:relative; background:#0a1428; overflow:hidden;
+    }
+    #pm-main-img { flex:1; width:100%; min-height:0; object-fit:cover; display:block; }
+    .pm-nav {
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:rgba(255,255,255,0.14); border:none; color:#fff;
+      font-size:2.4rem; line-height:1; padding:0.25rem 0.85rem;
+      cursor:pointer; border-radius:8px; transition:background 0.2s; z-index:3;
+    }
+    .pm-nav:hover { background:rgba(255,255,255,0.28); }
+    .pm-nav-prev { left:0.7rem; }
+    .pm-nav-next { right:0.7rem; }
+    #pm-img-counter {
+      position:absolute; bottom:0.6rem; right:0.8rem;
+      background:rgba(0,0,0,0.55); color:#fff;
+      font-size:0.73rem; padding:2px 9px; border-radius:20px; letter-spacing:1px;
+    }
+    .pm-thumbs {
+      display:flex; gap:5px; padding:6px 10px; flex-shrink:0;
+      overflow-x:auto; background:#0d1a30;
+      scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.2) transparent;
+    }
+    .pm-thumb {
+      width:54px; height:38px; object-fit:cover; flex-shrink:0;
+      border-radius:4px; cursor:pointer; opacity:0.48;
+      border:2px solid transparent; transition:opacity 0.2s, border-color 0.2s;
+    }
+    .pm-thumb.active, .pm-thumb:hover { opacity:1; border-color:#fff; }
+
+    /* ── RIGHT: info column ── */
+    .pm-info {
+      flex:1; padding:1.35rem 1.5rem 1.35rem;
+      overflow-y:auto; display:flex; flex-direction:column; gap:0;
+      scrollbar-width:thin;
+    }
+    .pm-title {
+      font-family:'Playfair Display',serif; font-size:1.38rem;
+      color:var(--brand); margin-bottom:0.2rem; line-height:1.2;
+    }
+    .pm-location-txt {
+      display:flex; align-items:center; gap:5px;
+      color:var(--muted); font-size:0.82rem; margin-bottom:0.85rem;
+    }
+    .pm-badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:0.85rem; }
+    .pm-badge {
+      font-size:0.65rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      padding:4px 11px; border-radius:4px; background:var(--brand); color:#fff;
+    }
+    .pm-badge.alquiler {
+      background:rgba(37,211,102,0.12); color:#1a7a42; border:1px solid rgba(37,211,102,0.4);
+    }
+    .pm-prices { display:flex; gap:1.4rem; flex-wrap:wrap; margin-bottom:0.85rem; }
+    .pm-price-item { display:flex; flex-direction:column; gap:1px; }
+    .pm-price-label { font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+    .pm-price-value {
+      font-size:1.35rem; font-weight:800; color:var(--brand);
+      font-family:'Playfair Display',serif;
+    }
+    .pm-divider { border:none; border-top:1.5px solid var(--border); margin:0.75rem 0; }
+    .pm-specs {
+      display:flex; flex-wrap:wrap; border:1.5px solid var(--border);
+      border-radius:10px; overflow:hidden; margin-bottom:0.85rem;
+    }
+    .pm-spec {
+      flex:1; min-width:58px; display:flex; flex-direction:column;
+      align-items:center; padding:0.5rem 0.4rem; gap:2px;
+      border-right:1.5px solid var(--border);
+    }
+    .pm-spec:last-child { border-right:none; }
+    .pm-spec-icon { font-size:1rem; }
+    .pm-spec-val { font-size:0.85rem; font-weight:700; color:var(--brand); }
+    .pm-spec-lbl { font-size:0.57rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+    .pm-desc {
+      font-size:0.84rem; color:var(--text); line-height:1.65;
+      margin-bottom:0.9rem; flex:1;
+    }
+    .pm-wa-btn {
+      display:flex; align-items:center; justify-content:center; gap:9px;
+      background:#25d366; color:#fff; border:none;
+      padding:0.8rem 1.2rem; border-radius:10px; font-size:0.88rem; font-weight:700;
+      cursor:pointer; text-decoration:none; width:100%; box-sizing:border-box;
+      transition:background 0.2s, transform 0.15s; margin-top:auto; flex-shrink:0;
+    }
+    .pm-wa-btn:hover { background:#1ebe5d; transform:translateY(-2px); }
+
+    /* card click hint */
+    .prop-card[data-propkey] { cursor:pointer; }
+    .prop-card[data-propkey] .prop-body::after {
+      content:'Ver detalles →';
+      display:block; margin-top:0.6rem;
+      font-size:0.75rem; color:var(--accent-blue); font-weight:600; letter-spacing:0.5px;
+    }
+
+    /* Mobile: single column, scrollable inside */
+    @media(max-width:700px){
+      .pm-inner { flex-direction:column; max-height:92vh; overflow-y:auto; }
+      .pm-gallery { flex:0 0 auto; min-height:220px; }
+      #pm-main-img { flex:none; height:220px; }
+      .pm-info { padding:1rem 1rem 1.1rem; }
+      .pm-title { font-size:1.15rem; }
+      .pm-price-value { font-size:1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen" role="status" aria-label="Cargando">
+  <div class="loader-logo">PANAMA<span> LISTINGS</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu" role="dialog" aria-modal="true">
+  <button id="mobile-menu-close" aria-label="Cerrar menú">✕</button>
+  <a href="#propiedades"  onclick="closeMobileMenu()">Propiedades</a>
+  <a href="#mapa"         onclick="closeMobileMenu()">Mapa</a>
+  <a href="#calculadora"  onclick="closeMobileMenu()">Calculadora</a>
+  <a href="#contact"      onclick="closeMobileMenu()">Contacto</a>
+  <a href="https://wa.me/5078347509" target="_blank" rel="noopener">WhatsApp</a>
+</div>
+
+<!-- NAVBAR -->
+<header>
+  <nav id="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Panama Listings">
+        <img src="images/logofondoazul.PNG" class="nav-logo-icon" alt="Panama Listings" aria-hidden="true">
+        <div class="nav-logo-text">
+          <span class="t1">PANAMA</span>
+          <span class="t2">LISTINGS</span>
+        </div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="#propiedades">Propiedades</a></li>
+        <li><a href="#contact">Contacto</a></li>
+        <li><a href="https://www.instagram.com/panama.listings/" target="_blank" rel="noopener" class="nav-ig" aria-label="Instagram"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a></li>
+        <li><a href="https://wa.me/5078347509" target="_blank" rel="noopener" class="nav-cta">WhatsApp</a></li>
+      </ul>
+      <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section id="hero" aria-label="Portada">
+  <div id="hero-bg">
+    <img src="images/hero-bg.jpg" alt="Avenida Balboa, Ciudad de Panamá" class="hero-skyline" style="object-fit:cover;object-position:center 40%;" aria-hidden="true"/>
+    <svg style="display:none" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="skyG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stop-color="#061020"/>
+          <stop offset="60%"  stop-color="#0d1e38"/>
+          <stop offset="100%" stop-color="#0b1830"/>
+        </linearGradient>
+        <linearGradient id="waterG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stop-color="#0e1e36"/>
+          <stop offset="100%" stop-color="#080e1a"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="75%" r="45%">
+          <stop offset="0%"  stop-color="rgba(30,48,88,0.55)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <rect width="1440" height="900" fill="url(#skyG)"/>
+      <rect width="1440" height="900" fill="url(#glow)"/>
+      <!-- Stars -->
+      <circle cx="120"  cy="55"  r="1"   fill="white" opacity="0.45"/>
+      <circle cx="290"  cy="80"  r="1.2" fill="white" opacity="0.38"/>
+      <circle cx="480"  cy="40"  r="0.9" fill="white" opacity="0.5"/>
+      <circle cx="660"  cy="70"  r="1"   fill="white" opacity="0.42"/>
+      <circle cx="840"  cy="30"  r="1.2" fill="white" opacity="0.48"/>
+      <circle cx="1020" cy="58"  r="0.8" fill="white" opacity="0.38"/>
+      <circle cx="1180" cy="42"  r="1.1" fill="white" opacity="0.45"/>
+      <circle cx="1360" cy="68"  r="0.9" fill="white" opacity="0.4"/>
+      <circle cx="200"  cy="115" r="0.7" fill="white" opacity="0.32"/>
+      <circle cx="560"  cy="98"  r="0.8" fill="white" opacity="0.36"/>
+      <circle cx="920"  cy="105" r="0.9" fill="white" opacity="0.34"/>
+      <!-- Background bldgs -->
+      <rect x="0"    y="510" width="52"  height="240" fill="#0e1e35" opacity="0.9"/>
+      <rect x="48"   y="530" width="42"  height="220" fill="#0c1c32" opacity="0.9"/>
+      <rect x="85"   y="498" width="60"  height="252" fill="#101f38" opacity="0.9"/>
+      <rect x="1300" y="500" width="58"  height="250" fill="#0e1e35" opacity="0.9"/>
+      <rect x="1354" y="520" width="46"  height="230" fill="#0c1c32" opacity="0.9"/>
+      <rect x="1396" y="488" width="44"  height="262" fill="#101f38" opacity="0.9"/>
+      <!-- Mid -->
+      <rect x="155" y="405" width="72"  height="345" fill="#152440"/>
+      <rect x="222" y="432" width="48"  height="318" fill="#111f38"/>
+      <rect x="266" y="382" width="82"  height="368" fill="#192b48"/>
+      <rect x="344" y="448" width="53"  height="302" fill="#111f38"/>
+      <rect x="393" y="412" width="68"  height="338" fill="#152440"/>
+      <rect x="1082" y="408" width="68" height="342" fill="#152440"/>
+      <rect x="1146" y="386" width="82" height="364" fill="#192b48"/>
+      <rect x="1224" y="432" width="53" height="318" fill="#111f38"/>
+      <!-- F&F -->
+      <rect x="498" y="292" width="50"  height="458" fill="#1c2e52"/>
+      <g fill="none" stroke="#253a65" stroke-width="1.2" opacity="0.7">
+        <line x1="498" y1="312" x2="548" y2="312"/><line x1="498" y1="332" x2="548" y2="332"/>
+        <line x1="498" y1="352" x2="548" y2="352"/><line x1="498" y1="372" x2="548" y2="372"/>
+        <line x1="498" y1="392" x2="548" y2="392"/><line x1="498" y1="412" x2="548" y2="412"/>
+        <line x1="498" y1="432" x2="548" y2="432"/><line x1="498" y1="452" x2="548" y2="452"/>
+        <line x1="498" y1="472" x2="548" y2="472"/><line x1="498" y1="492" x2="548" y2="492"/>
+      </g>
+      <rect x="519" y="276" width="8" height="22" fill="#334d80"/>
+      <!-- Trump -->
+      <rect x="564" y="252" width="44"  height="498" fill="#152440"/>
+      <rect x="572" y="246" width="28"  height="12"  fill="#1c2e52" rx="2"/>
+      <rect x="583" y="230" width="6"   height="20"  fill="#283e68"/>
+      <!-- BICSA -->
+      <rect x="622" y="202" width="70"  height="548" fill="#1c2e52"/>
+      <rect x="630" y="195" width="54"  height="13"  fill="#243868"/>
+      <g fill="rgba(255,255,255,0.1)">
+        <rect x="630" y="210" width="10" height="6" rx="1"/><rect x="644" y="210" width="10" height="6" rx="1"/>
+        <rect x="658" y="210" width="10" height="6" rx="1"/><rect x="672" y="210" width="10" height="6" rx="1"/>
+        <rect x="630" y="222" width="10" height="6" rx="1"/><rect x="644" y="222" width="10" height="6" rx="1"/>
+        <rect x="658" y="222" width="10" height="6" rx="1"/><rect x="672" y="222" width="10" height="6" rx="1"/>
+      </g>
+      <!-- Yoo -->
+      <rect x="706" y="272" width="48"  height="478" fill="#152440"/>
+      <rect x="714" y="266" width="32"  height="11"  fill="#1c2e52"/>
+      <!-- Torre del Pacífico -->
+      <rect x="770" y="178" width="80"  height="572" fill="#1c2e52"/>
+      <rect x="776" y="170" width="68"  height="14"  fill="#243868"/>
+      <rect x="806" y="152" width="12"  height="24"  fill="#334d80"/>
+      <g fill="rgba(255,255,255,0.12)">
+        <rect x="778" y="186" width="10" height="6" rx="1"/><rect x="792" y="186" width="10" height="6" rx="1"/>
+        <rect x="806" y="186" width="10" height="6" rx="1"/><rect x="820" y="186" width="10" height="6" rx="1"/>
+        <rect x="834" y="186" width="10" height="6" rx="1"/>
+        <rect x="778" y="198" width="10" height="6" rx="1"/><rect x="792" y="198" width="10" height="6" rx="1"/>
+        <rect x="806" y="198" width="10" height="6" rx="1"/><rect x="820" y="198" width="10" height="6" rx="1"/>
+        <rect x="834" y="198" width="10" height="6" rx="1"/>
+      </g>
+      <!-- Altavista -->
+      <rect x="864" y="308" width="58"  height="442" fill="#152440"/>
+      <rect x="872" y="300" width="42"  height="11"  fill="#1c2e52"/>
+      <!-- Right cluster -->
+      <rect x="936" y="358" width="50"  height="392" fill="#1c2e52"/>
+      <rect x="982" y="322" width="66"  height="428" fill="#152440"/>
+      <rect x="1044" y="372" width="46" height="378" fill="#111f38"/>
+      <!-- Water -->
+      <rect x="0" y="742" width="1440" height="158" fill="url(#waterG)"/>
+      <g opacity="0.06" fill="none" stroke="white" stroke-width="1">
+        <path d="M0 762 Q360 752 720 765 Q1080 775 1440 762"/>
+        <path d="M0 782 Q360 774 720 784 Q1080 793 1440 782"/>
+      </g>
+      <rect x="0" y="730" width="1440" height="16" fill="#07101e"/>
+      <rect x="0" y="836" width="1440" height="64" fill="#ffffff"/>
+    </svg>
+  </div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Panama Listings</p>
+    <h1 class="hero-title">
+      Encuentra tu<br>
+      <em>Propiedad Ideal</em><br>
+      en Panamá
+    </h1>
+    <p class="hero-subtitle">
+      Propiedades de lujo en Ciudad de Panamá — oportunidades exclusivas de inversión, alta plusvalía y ubicaciones privilegiadas para vivir o invertir.
+    </p>
+    <div class="hero-actions">
+      <a href="#propiedades" class="btn-primary">Ver Propiedades</a>
+      <a href="#contact"     class="btn-outline-white">Hablar con un Agente</a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- SEARCH BAR -->
+<section id="search-bar" aria-label="Búsqueda">
+  <div class="search-card reveal">
+    <form class="search-form" id="search-form" role="search" onsubmit="handleSearch(event)">
+      <div class="sf-group">
+        <label for="sf-loc">Ubicación</label>
+        <input type="text" id="sf-loc" placeholder="Ciudad, zona o proyecto…">
+      </div>
+      <div class="sf-group">
+        <label for="sf-tipo">Tipo</label>
+        <select id="sf-tipo">
+          <option value="">Todos</option>
+          <option value="apartamento">Apartamento</option>
+          <option value="casa">Casa</option>
+          <option value="terreno">Terreno</option>
+        </select>
+      </div>
+      <div class="sf-group">
+        <label for="sf-min">Precio Mín</label>
+        <select id="sf-min">
+          <option value="">Sin mínimo</option>
+          <option value="50000">$50,000</option>
+          <option value="100000">$100,000</option>
+          <option value="250000">$250,000</option>
+        </select>
+      </div>
+      <div class="sf-group">
+        <label for="sf-max">Precio Máx</label>
+        <select id="sf-max">
+          <option value="">Sin máximo</option>
+          <option value="250000">$250,000</option>
+          <option value="500000">$500,000</option>
+          <option value="1000000">$1,000,000</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-search">Buscar</button>
+    </form>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<section id="filters">
+  <div class="filters-inner reveal">
+    <div class="filter-tabs" role="tablist">
+      <button class="filter-tab active" data-filter="all"         onclick="setFilter(this,'all')">Todas</button>
+      <button class="filter-tab"        data-filter="venta"       onclick="setFilter(this,'venta')">En Venta</button>
+      <button class="filter-tab"        data-filter="alquiler"    onclick="setFilter(this,'alquiler')">En Alquiler</button>
+      <button class="filter-tab"        data-filter="apartamento" onclick="setFilter(this,'apartamento')">Apartamentos</button>
+      <button class="filter-tab"        data-filter="terreno"     onclick="setFilter(this,'terreno')">Terrenos</button>
+    </div>
+  </div>
+</section>
+
+<!-- PROPERTIES -->
+<section id="propiedades" aria-label="Propiedades">
+  <div class="properties-inner">
+    <div class="props-header reveal">
+      <div>
+        <span class="section-label">Portafolio</span>
+        <h2 class="section-title">Propiedades Disponibles</h2>
+      </div>
+      <p class="props-count">Mostrando <strong id="visible-count">8</strong> propiedades</p>
+    </div>
+    <div class="props-grid" id="props-grid">
+
+      <!-- CARD 1 — PH Altavista Towers -->
+      <article class="prop-card reveal d1" data-tipo="apartamento" data-operacion="venta alquiler" data-precio="197000" data-loc="el bosque marbella" data-propkey="altavista" aria-label="PH Altavista Towers">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="1"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/altavista/1.jpg" alt="PH Altavista Towers" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('altavista','PH Altavista Towers')" aria-label="Ver galería"><span>Ver Galería (10 fotos)</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <span class="prop-badge-type alquiler" style="bottom:2.6rem">En Alquiler</span>
+          <div class="prop-price-tag">$197K / $1,000<small style="font-size:0.58em;color:rgba(255,255,255,0.8)">/mes</small></div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">PH Altavista Towers</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> El Bosque, Marbella</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Excelente distribución en zona privilegiada, ideal para vivir o invertir.</p>
+          <div class="prop-tags"><span class="prop-tag">103 m²</span><span class="prop-tag">3 Recámaras</span><span class="prop-tag">2 Baños</span><span class="prop-tag">2 Parking</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20PH%20Altavista%20Towers')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 2 — Coco del Mar -->
+      <article class="prop-card reveal d2" data-tipo="apartamento" data-operacion="venta" data-precio="450000" data-loc="san francisco panama" data-propkey="coco" aria-label="Coco del Mar PH Long Beach">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="2"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/coco/1.jpg" alt="Coco del Mar — PH Long Beach" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('coco','Coco del Mar — PH Long Beach')" aria-label="Ver galería"><span>Ver Galería (8 fotos)</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">$450,000</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">Coco del Mar — PH Long Beach</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> San Francisco, Panamá</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Penthouse amoblado en exclusivo complejo frente al mar en San Francisco.</p>
+          <div class="prop-tags"><span class="prop-tag">205 m²</span><span class="prop-tag">3 Recámaras</span><span class="prop-tag">4 Baños</span><span class="prop-tag">2 Parking</span><span class="prop-tag">Amoblado</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20Coco%20del%20Mar')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 3 — PH Torres del Pacífico A -->
+      <article class="prop-card reveal d3" data-tipo="apartamento" data-operacion="venta" data-precio="320000" data-loc="avenida balboa marbella" data-propkey="torre" aria-label="PH Torres del Pacífico A">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="3"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/torre/1.jpg" alt="PH Torres del Pacífico A — Avenida Balboa" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('torre','PH Torres del Pacífico A')" aria-label="Ver galería"><span>Ver Galería (9 fotos)</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">$320,000</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">PH Torres del Pacífico A</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Avenida Balboa, Marbella</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Alto potencial de valorización con impresionante vista a la Bahía de Panamá.</p>
+          <div class="prop-tags"><span class="prop-tag">220 m²</span><span class="prop-tag">4 Recámaras</span><span class="prop-tag">5 Baños</span><span class="prop-tag">2 Parking</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20Torres%20del%20Pac%C3%ADfico')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 4 — PH Villa Valencia -->
+      <article class="prop-card reveal d1" data-tipo="casa" data-operacion="venta" data-precio="595000" data-loc="costa sur panama" data-propkey="valencia" aria-label="PH Villa Valencia">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="4"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/valencia/1.jpg" alt="PH Villa Valencia — Costa Sur" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('valencia','PH Villa Valencia')" aria-label="Ver galería"><span>Ver Galería (8 fotos)</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">$595,000</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">PH Villa Valencia</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Costa Sur, Panamá</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Casa amoblada de lujo con amplia privacidad en Costa Sur.</p>
+          <div class="prop-tags"><span class="prop-tag">468 m²</span><span class="prop-tag">5 Recámaras</span><span class="prop-tag">5 Baños</span><span class="prop-tag">5 Parking</span><span class="prop-tag">Amoblada</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20Villa%20Valencia')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 5 — PH Waterview -->
+      <article class="prop-card reveal d2" data-tipo="apartamento" data-operacion="venta" data-precio="187000" data-loc="san francisco ave israel" data-propkey="waterview" aria-label="PH Waterview">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="5"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/waterview/1.jpg" alt="PH Waterview — San Francisco" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('waterview','PH Waterview')" aria-label="Ver galería"><span>Ver Galería (8 fotos)</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">$187,000</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">PH Waterview</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> San Francisco, Ave. Israel</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Penthouse amoblado con excelente vista en San Francisco.</p>
+          <div class="prop-tags"><span class="prop-tag">110 m²</span><span class="prop-tag">3 Recámaras</span><span class="prop-tag">3 Baños</span><span class="prop-tag">2 Parking</span><span class="prop-tag">Amoblado</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20PH%20Waterview')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 6 — Torre Zeus -->
+      <article class="prop-card reveal d3" data-tipo="apartamento" data-operacion="venta" data-precio="749000" data-loc="costa del este panama" data-propkey="zeus" aria-label="Torre Zeus">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="6"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/zeus/1.jpg" alt="Torre Zeus — Costa del Este" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('zeus','Torre Zeus')" aria-label="Ver galería"><span>Ver Galería (7 fotos)</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">$749,000</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">Torre Zeus</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Costa del Este, Panamá</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Residencia de ultra lujo en la zona más exclusiva de Costa del Este.</p>
+          <div class="prop-tags"><span class="prop-tag">428 m²</span><span class="prop-tag">5 Recámaras</span><span class="prop-tag">6 Baños</span><span class="prop-tag">3 Parking</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20Torre%20Zeus')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 7 — Terreno Chitré -->
+      <article class="prop-card reveal d1" data-tipo="terreno" data-operacion="venta" data-precio="0" data-loc="chitre herrera" data-propkey="chitre" aria-label="Terreno en Chitré">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="7"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/chitre/1.jpg" alt="Terreno en Chitré — 10 hectáreas" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('chitre','Terreno en Chitré')" aria-label="Ver foto"><span>Ver Foto Aérea</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">Negociable</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">Terreno en Chitré</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Chitré, Herrera</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Excelente oportunidad de inversión en zona en crecimiento.</p>
+          <div class="prop-tags"><span class="prop-tag">10 Hectáreas</span><span class="prop-tag">100,000 m²</span><span class="prop-tag">Urbanizable</span><span class="prop-tag">Precio Negociable</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20el%20terreno%20en%20Chitr%C3%A9')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CARD 8 — Propiedad en Arraiján -->
+      <article class="prop-card reveal d2" data-tipo="casa" data-operacion="venta" data-precio="0" data-loc="arraijan panama oeste" data-propkey="arraijan" aria-label="Propiedad en Arraiján">
+        <label class="compare-check"><input type="checkbox" class="compare-cb" data-id="8"> Comparar</label>
+        <div class="prop-image-wrap">
+          <img src="images/arraijan/1.jpg" alt="Propiedad en Arraiján" loading="lazy">
+          <button class="prop-lightbox-btn" onclick="openGallery('arraijan','Propiedad en Arraiján')" aria-label="Ver foto"><span>Ver Foto</span></button>
+          <span class="prop-badge-type">En Venta</span>
+          <div class="prop-price-tag">Negociable</div>
+        </div>
+        <div class="prop-body">
+          <h3 class="prop-title">Propiedad en Arraiján</h3>
+          <p class="prop-location"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Arraiján, Panamá Oeste</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.45;">Casa en venta en Arraiján, excelente oportunidad en Panamá Oeste.</p>
+          <div class="prop-tags"><span class="prop-tag">Casa</span><span class="prop-tag">En Venta</span><span class="prop-tag">Panamá Oeste</span></div>
+          <div class="prop-footer">
+            <span class="prop-phone">+507 834 7509</span>
+            <div class="prop-actions">
+              <button class="btn-wa" onclick="window.open('https://wa.me/5078347509?text=Me%20interesa%20la%20propiedad%20en%20Arraij%C3%A1n')" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp</button>
+              
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <p id="no-results" style="display:none;text-align:center;color:var(--muted);padding:3rem 0;font-size:1.05rem;">
+      No se encontraron propiedades con esos criterios.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== MAP ===================== -->
+<section id="mapa" aria-labelledby="map-heading" style="padding:4rem 2rem 5rem; background:var(--surface); border-top:1.5px solid var(--border);">
+  <div style="max-width:1400px; margin:0 auto;">
+    <div class="reveal" style="margin-bottom:2rem;">
+      <span class="section-label">Ubicaciones</span>
+      <h2 id="map-heading" class="section-title">Mapa de Propiedades</h2>
+      <p class="section-desc">Explora dónde están ubicadas nuestras propiedades disponibles.</p>
+    </div>
+    <div style="border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-md); border:1.5px solid var(--border);">
+      <div id="map" style="height:480px; width:100%; background:#e8ecf0;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CALCULADORA HIPOTECARIA ===================== -->
+<section id="calculadora" aria-labelledby="calc-heading" style="padding:5rem 2rem; background:#fff; border-top:1.5px solid var(--border);">
+  <div style="max-width:1060px; margin:0 auto;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start;">
+
+      <!-- Info -->
+      <div class="reveal-left">
+        <span class="section-label">Herramienta</span>
+        <h2 id="calc-heading" class="section-title">Calculadora<br>Hipotecaria</h2>
+        <p class="section-desc" style="margin-bottom:2rem;">
+          Estima tu cuota mensual en Panamá. Las tasas hipotecarias locales promedian entre 5% y 7% anual.
+        </p>
+        <div style="background:var(--brand-light); border-radius:var(--radius); padding:1.2rem 1.5rem; border-left:3px solid var(--brand);">
+          <p style="font-size:0.82rem; color:var(--brand); font-weight:600; margin-bottom:0.3rem;">💡 Dato útil</p>
+          <p style="font-size:0.82rem; color:var(--muted); line-height:1.6;">En Panamá el financiamiento hipotecario cubre hasta el 80-90% del valor de la propiedad, con plazos de hasta 30 años. La prima mínima es del 10-20%.</p>
+        </div>
+      </div>
+
+      <!-- Calculadora -->
+      <div class="reveal">
+        <div style="background:var(--surface); border-radius:var(--radius-lg); padding:2rem; border:1.5px solid var(--border);">
+          <div style="display:flex; flex-direction:column; gap:1.2rem;" id="calc-form">
+
+            <div class="cf-group">
+              <label for="calc-price">Precio de la propiedad ($)</label>
+              <input type="number" id="calc-price" placeholder="200,000" min="0" step="1000" value="200000" oninput="calcMortgage()">
+            </div>
+
+            <div class="cf-group">
+              <label for="calc-down">Prima / Inicial (%)</label>
+              <input type="range" id="calc-down" min="5" max="50" value="20" step="1"
+                     oninput="document.getElementById('calc-down-val').textContent=this.value+'%'; calcMortgage();"
+                     style="accent-color:var(--brand); cursor:pointer;">
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:2px;">
+                <span>5%</span>
+                <strong id="calc-down-val" style="color:var(--brand);">20%</strong>
+                <span>50%</span>
+              </div>
+            </div>
+
+            <div class="cf-group">
+              <label for="calc-rate">Tasa de interés anual (%)</label>
+              <input type="range" id="calc-rate" min="3" max="12" value="6" step="0.1"
+                     oninput="document.getElementById('calc-rate-val').textContent=parseFloat(this.value).toFixed(1)+'%'; calcMortgage();"
+                     style="accent-color:var(--brand); cursor:pointer;">
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--muted); margin-top:2px;">
+                <span>3%</span>
+                <strong id="calc-rate-val" style="color:var(--brand);">6.0%</strong>
+                <span>12%</span>
+              </div>
+            </div>
+
+            <div class="cf-group">
+              <label for="calc-term">Plazo (años)</label>
+              <select id="calc-term" oninput="calcMortgage()">
+                <option value="10">10 años</option>
+                <option value="15">15 años</option>
+                <option value="20">20 años</option>
+                <option value="25" selected>25 años</option>
+                <option value="30">30 años</option>
+              </select>
+            </div>
+
+            <!-- Resultado -->
+            <div id="calc-result" style="background:var(--brand); border-radius:var(--radius); padding:1.5rem; text-align:center; margin-top:0.5rem;">
+              <p style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:0.4rem;">Cuota mensual estimada</p>
+              <p id="calc-monthly" style="font-family:'Playfair Display',serif; font-size:2.8rem; font-weight:700; color:#fff; line-height:1;">$0</p>
+              <p style="font-size:0.78rem; color:rgba(255,255,255,0.55); margin-top:0.5rem;">
+                Préstamo: <span id="calc-loan" style="color:rgba(255,255,255,0.85); font-weight:600;">$0</span> ·
+                Total a pagar: <span id="calc-total" style="color:rgba(255,255,255,0.85); font-weight:600;">$0</span>
+              </p>
+            </div>
+
+            <a href="https://wa.me/5078347509?text=Hola!%20Quisiera%20informaci%C3%B3n%20sobre%20financiamiento%20hipotecario%20en%20Panam%C3%A1"
+               target="_blank" rel="noopener"
+               style="background:var(--whatsapp); color:#fff; border-radius:8px; padding:0.85rem; text-align:center; font-weight:700; font-size:0.88rem; display:flex; align-items:center; justify-content:center; gap:8px; transition:var(--transition);"
+               onmouseover="this.style.background='#1da851'" onmouseout="this.style.background='var(--whatsapp)'">
+              <svg viewBox="0 0 24 24" fill="white" style="width:18px;height:18px;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Consultar financiamiento
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <h2 class="reveal">¿Listo para encontrar<br><em>tu propiedad ideal?</em></h2>
+    <p class="reveal">Nuestro equipo está disponible para asesorarte en cada paso de tu inversión en Panamá.</p>
+    <div class="cta-actions reveal">
+      <a href="https://wa.me/5078347509" target="_blank" rel="noopener" class="btn-white" style="display:inline-flex;align-items:center;gap:8px;">
+        <svg viewBox="0 0 24 24" fill="#1e3058" style="width:18px;height:18px;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Contactar por WhatsApp
+      </a>
+      <a href="#contact" class="btn-outline-light">Enviar mensaje</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" aria-labelledby="contact-heading">
+  <div class="contact-inner">
+    <div class="reveal-left">
+      <span class="section-label">Contacto</span>
+      <h2 id="contact-heading" class="section-title">Hablemos de<br>tu inversión</h2>
+      <p class="section-desc" style="margin-bottom:2.5rem;">
+        Disponibles para asesorarte en la búsqueda, compra o alquiler de tu próxima propiedad en Panamá.
+      </p>
+      <div>
+        <div class="contact-info-item">
+          <div class="ci-icon">📱</div>
+          <div>
+            <div class="ci-label">WhatsApp / Teléfono</div>
+            <a href="https://wa.me/5078347509" class="ci-value">+507 834 7509</a>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-icon">📧</div>
+          <div>
+            <div class="ci-label">Email</div>
+            <a href="mailto:inmobiliaria@latamdigi.com" class="ci-value">inmobiliaria@latamdigi.com</a>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-icon">📍</div>
+          <div>
+            <div class="ci-label">Ubicación</div>
+            <span class="ci-value">Ciudad de Panamá, Panamá</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" id="contact-form" onsubmit="sendContact(event)" novalidate>
+        <div class="cf-row">
+          <div class="cf-group">
+            <label for="cf-name">Nombre</label>
+            <input type="text" id="cf-name" placeholder="Tu nombre" required>
+          </div>
+          <div class="cf-group">
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" placeholder="tu@email.com" required>
+          </div>
+        </div>
+        <div class="cf-row">
+          <div class="cf-group">
+            <label for="cf-phone">Teléfono</label>
+            <input type="tel" id="cf-phone" placeholder="+507 …">
+          </div>
+          <div class="cf-group">
+            <label for="cf-interest">Interés</label>
+            <select id="cf-interest">
+              <option value="">Seleccionar…</option>
+              <option>Comprar</option>
+              <option>Alquilar</option>
+              <option>Invertir</option>
+              <option>Vender mi propiedad</option>
+            </select>
+          </div>
+        </div>
+        <div class="cf-group">
+          <label for="cf-msg">Mensaje</label>
+          <textarea id="cf-msg" placeholder="Cuéntanos qué estás buscando…"></textarea>
+        </div>
+        <button type="submit" class="btn-send">Enviar mensaje →</button>
+        <div class="form-success" id="form-success" role="alert">
+          ✓ ¡Mensaje enviado! Te contactaremos pronto.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <img src="images/logofondoazul.PNG" alt="Panama Listings" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:0.75rem;display:block;">
+        <p class="footer-brand-desc">Tu socio de confianza en bienes raíces en Panamá. Conectamos personas con propiedades que superan sus expectativas.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="#propiedades">Comprar</a></li>
+          <li><a href="#propiedades">Alquilar</a></li>
+          <li><a href="#propiedades">Terrenos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Compañía</h4>
+        <ul>
+          <li><a href="#contact">Nosotros</a></li>
+          <li><a href="#contact">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="mailto:inmobiliaria@latamdigi.com">inmobiliaria@latamdigi.com</a></li>
+          <li><a href="https://wa.me/5078347509">+507 834 7509</a></li>
+          <li><span style="color:rgba(255,255,255,0.4)">Ciudad de Panamá</span></li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Panama Listings. Todos los derechos reservados.</p>
+      <div class="footer-social">
+        <a href="https://wa.me/5078347509" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+        <a href="mailto:inmobiliaria@latamdigi.com" aria-label="Email">✉</a>
+        <a href="https://www.instagram.com/panama.listings/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp flotante con logo oficial -->
+<a id="wa-float" href="https://wa.me/5078347509" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <span id="wa-float-tip">¡Escríbenos!</span>
+  <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- LIGHTBOX -->
+<!-- PROPERTY DETAIL MODAL -->
+<div id="prop-modal" role="dialog" aria-modal="true">
+  <div class="pm-inner">
+    <button id="pm-close" onclick="closePropModal()" aria-label="Cerrar">✕</button>
+    <div class="pm-gallery">
+      <button class="pm-nav pm-nav-prev" id="pm-prev" onclick="pmNav(-1)" aria-label="Foto anterior">&#8249;</button>
+      <img id="pm-main-img" src="" alt="">
+      <button class="pm-nav pm-nav-next" id="pm-next" onclick="pmNav(1)" aria-label="Foto siguiente">&#8250;</button>
+      <span id="pm-img-counter"></span>
+      <div id="pm-thumbs" class="pm-thumbs"></div>
+    </div>
+    <div class="pm-info">
+      <h2 id="pm-title" class="pm-title"></h2>
+      <p class="pm-location-txt">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="pm-location-txt"></span>
+      </p>
+      <div id="pm-badges" class="pm-badges"></div>
+      <div id="pm-prices" class="pm-prices"></div>
+      <hr class="pm-divider">
+      <div id="pm-specs" class="pm-specs"></div>
+      <p id="pm-desc" class="pm-desc"></p>
+      <a id="pm-wa-btn" class="pm-wa-btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="white" style="width:22px;height:22px;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consultar por WhatsApp — +507 834 7509
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="lightbox" role="dialog" aria-modal="true" tabindex="-1">
+  <button id="lightbox-close" onclick="closeLightbox()" aria-label="Cerrar">✕</button>
+  <button id="lb-prev" onclick="lbNav(-1)" aria-label="Foto anterior">&#8249;</button>
+  <button id="lb-next" onclick="lbNav(1)"  aria-label="Foto siguiente">&#8250;</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lb-footer">
+    <p id="lightbox-title"></p>
+    <span id="lb-counter"></span>
+  </div>
+</div>
+
+<!-- COMPARE BAR -->
+<div id="compare-bar" role="region" aria-live="polite">
+  <p class="compare-bar-info"><strong id="compare-count">0</strong> propiedad(es) para comparar</p>
+  <button class="btn-compare-now" onclick="openComparator()">Comparar ahora</button>
+  <button class="btn-compare-clear" onclick="clearCompare()">Limpiar</button>
+</div>
+
+<!-- COMPARE MODAL -->
+<div id="compare-modal" role="dialog" aria-modal="true" tabindex="-1">
+  <div class="compare-modal-inner">
+    <div class="compare-modal-header">
+      <h2>Comparar Propiedades</h2>
+      <button id="compare-modal-close" onclick="closeComparator()">✕</button>
+    </div>
+    <div id="compare-table-wrap" style="overflow-x:auto;padding:1.5rem;"></div>
+  </div>
+</div>
+
+<script>
+/* LOADING */
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 1800);
+});
+
+/* NAVBAR */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive:true });
+
+/* PARALLAX */
+const heroBg = document.getElementById('hero-bg');
+window.addEventListener('scroll', () => {
+  if (window.scrollY < window.innerHeight)
+    heroBg.style.transform = `translateY(${window.scrollY * 0.32}px)`;
+}, { passive:true });
+
+/* MOBILE MENU */
+const mobileMenu   = document.getElementById('mobile-menu');
+const mobileToggle = document.getElementById('mobile-toggle');
+mobileToggle.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  mobileToggle.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+document.getElementById('mobile-menu-close').addEventListener('click', closeMobileMenu);
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open');
+  mobileToggle.setAttribute('aria-expanded', false);
+  document.body.style.overflow = '';
+}
+
+/* SCROLL ANIMATIONS */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold:0.12, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.reveal,.reveal-left').forEach(el => obs.observe(el));
+
+/* FILTERS */
+let activeFilter = 'all';
+function setFilter(btn, filter) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.toggle('active', b === btn));
+  applyFilters();
+}
+function applyFilters() {
+  let n = 0;
+  document.querySelectorAll('.prop-card').forEach(c => {
+    const show = activeFilter === 'all' || c.dataset.tipo === activeFilter || (c.dataset.operacion||'').split(' ').includes(activeFilter);
+    c.style.display = show ? '' : 'none';
+    if (show) n++;
+  });
+  document.getElementById('visible-count').textContent = n;
+  document.getElementById('no-results').style.display = n === 0 ? 'block' : 'none';
+}
+
+/* SEARCH */
+function handleSearch(e) {
+  e.preventDefault();
+  const loc  = document.getElementById('sf-loc').value.toLowerCase();
+  const tipo = document.getElementById('sf-tipo').value;
+  let n = 0;
+  document.querySelectorAll('.prop-card').forEach(c => {
+    let show = true;
+    if (loc  && !c.dataset.loc.includes(loc)) show = false;
+    if (tipo && c.dataset.tipo !== tipo)       show = false;
+    c.style.display = show ? '' : 'none';
+    if (show) n++;
+  });
+  document.getElementById('visible-count').textContent = n;
+  document.getElementById('no-results').style.display = n === 0 ? 'block' : 'none';
+  document.getElementById('propiedades').scrollIntoView({ behavior:'smooth' });
+}
+
+/* LIGHTBOX — single image */
+const lbImgs = {};
+document.querySelectorAll('.prop-card').forEach(card => {
+  const btn = card.querySelector('.prop-lightbox-btn');
+  const img = card.querySelector('.prop-image-wrap img');
+  const m   = btn?.getAttribute('onclick')?.match(/'([^']+)'/);
+  if (m) lbImgs[m[1]] = { src: img.src, alt: img.alt };
+});
+function openLightbox(key, title) {
+  const d = lbImgs[key]; if (!d) return;
+  document.getElementById('lb-prev').style.display = 'none';
+  document.getElementById('lb-next').style.display = 'none';
+  document.getElementById('lb-counter').textContent = '';
+  document.getElementById('lightbox-img').src = d.src;
+  document.getElementById('lightbox-img').alt = d.alt;
+  document.getElementById('lightbox-title').textContent = title;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* LIGHTBOX — gallery (multi-photo) */
+const galleries = {
+  altavista: { title:'PH Altavista Towers', photos:[
+    {src:'images/altavista/1.jpg',caption:'Foto 1'},{src:'images/altavista/2.jpg',caption:'Foto 2'},
+    {src:'images/altavista/3.jpg',caption:'Foto 3'},{src:'images/altavista/4.jpg',caption:'Foto 4'},
+    {src:'images/altavista/5.jpg',caption:'Foto 5'},{src:'images/altavista/6.jpg',caption:'Foto 6'},
+    {src:'images/altavista/7.jpg',caption:'Foto 7'},{src:'images/altavista/8.jpg',caption:'Foto 8'},
+    {src:'images/altavista/9.jpg',caption:'Foto 9'},{src:'images/altavista/10.jpg',caption:'Foto 10'},
+  ]},
+  coco: { title:'Coco del Mar — PH Long Beach', photos:[
+    {src:'images/coco/1.jpg',caption:'Foto 1'},{src:'images/coco/2.jpg',caption:'Foto 2'},
+    {src:'images/coco/3.jpg',caption:'Foto 3'},{src:'images/coco/4.jpg',caption:'Foto 4'},
+    {src:'images/coco/5.jpg',caption:'Foto 5'},{src:'images/coco/6.jpg',caption:'Foto 6'},
+    {src:'images/coco/7.jpg',caption:'Foto 7'},{src:'images/coco/8.jpg',caption:'Foto 8'},
+  ]},
+  torre: { title:'PH Torres del Pacífico A', photos:[
+    {src:'images/torre/1.jpg',caption:'Foto 1'},{src:'images/torre/2.jpg',caption:'Foto 2'},
+    {src:'images/torre/3.jpg',caption:'Foto 3'},{src:'images/torre/4.jpg',caption:'Foto 4'},
+    {src:'images/torre/5.jpg',caption:'Foto 5'},{src:'images/torre/6.jpg',caption:'Foto 6'},
+    {src:'images/torre/7.jpg',caption:'Foto 7'},{src:'images/torre/8.jpg',caption:'Foto 8'},
+    {src:'images/torre/9.jpg',caption:'Foto 9'},
+  ]},
+  valencia: { title:'PH Villa Valencia', photos:[
+    {src:'images/valencia/1.jpg',caption:'Foto 1'},{src:'images/valencia/2.jpg',caption:'Foto 2'},
+    {src:'images/valencia/3.jpg',caption:'Foto 3'},{src:'images/valencia/4.jpg',caption:'Foto 4'},
+    {src:'images/valencia/5.jpg',caption:'Foto 5'},{src:'images/valencia/6.jpg',caption:'Foto 6'},
+    {src:'images/valencia/7.jpg',caption:'Foto 7'},{src:'images/valencia/8.jpg',caption:'Foto 8'},
+  ]},
+  waterview: { title:'PH Waterview', photos:[
+    {src:'images/waterview/1.jpg',caption:'Foto 1'},{src:'images/waterview/2.jpg',caption:'Foto 2'},
+    {src:'images/waterview/3.jpg',caption:'Foto 3'},{src:'images/waterview/4.jpg',caption:'Foto 4'},
+    {src:'images/waterview/5.jpg',caption:'Foto 5'},{src:'images/waterview/6.jpg',caption:'Foto 6'},
+    {src:'images/waterview/7.jpg',caption:'Foto 7'},{src:'images/waterview/8.jpg',caption:'Foto 8'},
+  ]},
+  zeus: { title:'Torre Zeus', photos:[
+    {src:'images/zeus/1.jpg',caption:'Foto 1'},{src:'images/zeus/2.jpg',caption:'Foto 2'},
+    {src:'images/zeus/3.jpg',caption:'Foto 3'},{src:'images/zeus/4.jpg',caption:'Foto 4'},
+    {src:'images/zeus/5.jpg',caption:'Foto 5'},{src:'images/zeus/6.jpg',caption:'Foto 6'},
+    {src:'images/zeus/7.jpg',caption:'Foto 7'},
+  ]},
+  chitre: { title:'Terreno en Chitré', photos:[
+    {src:'images/chitre/1.jpg',caption:'Vista aérea del terreno'},
+  ]},
+  arraijan: { title:'Propiedad en Arraiján', photos:[
+    {src:'images/arraijan/1.jpg',caption:'Vista de la propiedad'},
+  ]},
+};
+/* ============================================================
+   PROPERTY DETAIL MODAL
+============================================================ */
+const propDetails = {
+  altavista: {
+    title:'PH Altavista Towers', location:'El Bosque, Marbella',
+    operaciones:[{label:'En Venta',cls:'',precio:'$197,000',subLabel:'Precio de venta'},{label:'En Alquiler',cls:'alquiler',precio:'$1,000/mes',subLabel:'Alquiler mensual'}],
+    specs:[{icon:'📐',val:'103 m²',lbl:'Área'},{icon:'🛏',val:'3',lbl:'Recámaras'},{icon:'🚿',val:'2',lbl:'Baños'},{icon:'🚗',val:'2',lbl:'Parking'}],
+    desc:'Apartamento con excelente distribución y ubicación estratégica en El Bosque. Disponible en venta ($197,000) o alquiler ($1,000/mes). Pisos de madera laminada, A/C en todas las recámaras, walk-in closet, amplio salón con balcón y vistas a la ciudad.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20PH%20Altavista%20Towers', gallery:'altavista',
+  },
+  coco: {
+    title:'Coco del Mar — PH Long Beach', location:'San Francisco, Panamá',
+    operaciones:[{label:'En Venta',cls:'',precio:'$450,000',subLabel:'Precio de venta'}],
+    specs:[{icon:'📐',val:'205 m²',lbl:'Área'},{icon:'🛏',val:'3',lbl:'Recámaras'},{icon:'🚿',val:'4',lbl:'Baños'},{icon:'🚗',val:'2',lbl:'Parking'},{icon:'🛋',val:'Sí',lbl:'Amoblado'}],
+    desc:'Penthouse amoblado en exclusivo complejo frente al mar en San Francisco. 205 m², 3 recámaras, 4 baños, 2 estacionamientos. Acabados de lujo y vistas espectaculares.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20Coco%20del%20Mar', gallery:'coco',
+  },
+  torre: {
+    title:'PH Torres del Pacífico A', location:'Avenida Balboa, Marbella',
+    operaciones:[{label:'En Venta',cls:'',precio:'$320,000',subLabel:'Precio de venta'}],
+    specs:[{icon:'📐',val:'220 m²',lbl:'Área'},{icon:'🛏',val:'4',lbl:'Recámaras'},{icon:'🚿',val:'5',lbl:'Baños'},{icon:'🚗',val:'2',lbl:'Parking'}],
+    desc:'Penthouse en Avenida Balboa con impresionante vista a la Bahía de Panamá. 220 m², 4 recámaras, 5 baños. Amenidades: piscina, gimnasio, canchas deportivas y áreas sociales.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20Torres%20del%20Pac%C3%ADfico', gallery:'torre',
+  },
+  valencia: {
+    title:'PH Villa Valencia', location:'Costa Sur, Panamá',
+    operaciones:[{label:'En Venta',cls:'',precio:'$595,000',subLabel:'Precio de venta'}],
+    specs:[{icon:'📐',val:'468 m²',lbl:'Área'},{icon:'🛏',val:'5',lbl:'Recámaras'},{icon:'🚿',val:'5',lbl:'Baños'},{icon:'🚗',val:'5',lbl:'Parking'},{icon:'🛋',val:'Sí',lbl:'Amoblada'}],
+    desc:'Casa amoblada de lujo en Costa Sur. 468 m², 5 recámaras, 5 baños, 5 estacionamientos. Amplia privacidad, acabados premium y espacios de entretenimiento excepcionales.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20Villa%20Valencia', gallery:'valencia',
+  },
+  waterview: {
+    title:'PH Waterview', location:'San Francisco, Ave. Israel',
+    operaciones:[{label:'En Venta',cls:'',precio:'$187,000',subLabel:'Precio de venta'}],
+    specs:[{icon:'📐',val:'110 m²',lbl:'Área'},{icon:'🛏',val:'3',lbl:'Recámaras'},{icon:'🚿',val:'3',lbl:'Baños'},{icon:'🚗',val:'2',lbl:'Parking'},{icon:'🛋',val:'Sí',lbl:'Amoblado'}],
+    desc:'Penthouse amoblado en San Francisco con excelente vista. 110 m², 3 recámaras, 3 baños, 2 estacionamientos. Ubicación privilegiada sobre Avenida Israel.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20PH%20Waterview', gallery:'waterview',
+  },
+  zeus: {
+    title:'Torre Zeus', location:'Costa del Este, Panamá',
+    operaciones:[{label:'En Venta',cls:'',precio:'$749,000',subLabel:'Precio de venta'}],
+    specs:[{icon:'📐',val:'428 m²',lbl:'Área'},{icon:'🛏',val:'5',lbl:'Recámaras'},{icon:'🚿',val:'6',lbl:'Baños'},{icon:'🚗',val:'3',lbl:'Parking'}],
+    desc:'Residencia de ultra lujo en Costa del Este. 428 m², 5 recámaras, 6 baños, 3 estacionamientos. La zona más exclusiva de Ciudad de Panamá con amenidades de clase mundial.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20Torre%20Zeus', gallery:'zeus',
+  },
+  chitre: {
+    title:'Terreno en Chitré', location:'Chitré, Herrera',
+    operaciones:[{label:'En Venta',cls:'',precio:'Negociable',subLabel:'Precio'}],
+    specs:[{icon:'📐',val:'100,000 m²',lbl:'Área'},{icon:'🌿',val:'10 Ha',lbl:'Hectáreas'},{icon:'🏗️',val:'Sí',lbl:'Urbanizable'},{icon:'🚗',val:'Fácil',lbl:'Acceso'}],
+    desc:'10 hectáreas de terreno urbanizable en Chitré, Herrera. Precio negociable, fácil acceso, servicios básicos disponibles. Ideal para proyectos residenciales o comerciales.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20el%20terreno%20en%20Chitr%C3%A9', gallery:'chitre',
+  },
+  arraijan: {
+    title:'Propiedad en Arraiján', location:'Arraiján, Panamá Oeste',
+    operaciones:[{label:'En Venta',cls:'',precio:'Negociable',subLabel:'Precio'}],
+    specs:[{icon:'🏠',val:'Casa',lbl:'Tipo'},{icon:'📍',val:'Arraiján',lbl:'Ubicación'}],
+    desc:'Casa en venta en Arraiján, Panamá Oeste. Excelente oportunidad de inversión a precio accesible.',
+    wa:'https://wa.me/5078347509?text=Me%20interesa%20la%20propiedad%20en%20Arraij%C3%A1n', gallery:'arraijan',
+  },
+};
+let pmKey = null, pmIdx = 0;
+function openPropModal(key) {
+  const d = propDetails[key]; if (!d) return;
+  pmKey = key; pmIdx = 0;
+  document.getElementById('pm-title').textContent = d.title;
+  document.getElementById('pm-location-txt').textContent = d.location;
+  document.getElementById('pm-badges').innerHTML = d.operaciones.map(o =>
+    `<span class="pm-badge ${o.cls}">${o.label}</span>`).join('');
+  document.getElementById('pm-prices').innerHTML = d.operaciones.map(o =>
+    `<div class="pm-price-item"><span class="pm-price-label">${o.subLabel}</span><span class="pm-price-value">${o.precio}</span></div>`).join('');
+  document.getElementById('pm-specs').innerHTML = d.specs.map(s =>
+    `<div class="pm-spec"><span class="pm-spec-icon">${s.icon}</span><span class="pm-spec-val">${s.val}</span><span class="pm-spec-lbl">${s.lbl}</span></div>`).join('');
+  document.getElementById('pm-desc').textContent = d.desc;
+  document.getElementById('pm-wa-btn').href = d.wa;
+  const g = d.gallery ? galleries[d.gallery] : null;
+  const hasPics = g && g.photos.length > 0;
+  const fallbackSrc = document.querySelector(`.prop-card[data-propkey="${key}"] .prop-image-wrap img`)?.src || '';
+  document.getElementById('pm-main-img').src = hasPics ? g.photos[0].src : fallbackSrc;
+  document.getElementById('pm-main-img').alt = d.title;
+  document.getElementById('pm-img-counter').textContent = hasPics ? `1 / ${g.photos.length}` : '';
+  document.getElementById('pm-prev').style.display = hasPics && g.photos.length > 1 ? 'block' : 'none';
+  document.getElementById('pm-next').style.display = hasPics && g.photos.length > 1 ? 'block' : 'none';
+  const thumbsEl = document.getElementById('pm-thumbs');
+  if (hasPics) {
+    thumbsEl.innerHTML = g.photos.map((p,i) =>
+      `<img src="${p.src}" alt="${p.caption}" class="pm-thumb${i===0?' active':''}" onclick="pmSetPhoto(${i})">`).join('');
+    thumbsEl.style.display = 'flex';
+  } else {
+    thumbsEl.innerHTML = ''; thumbsEl.style.display = 'none';
+  }
+  document.getElementById('prop-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function pmNav(dir) {
+  if (!pmKey || !propDetails[pmKey]?.gallery) return;
+  const g = galleries[propDetails[pmKey].gallery];
+  pmIdx = (pmIdx + dir + g.photos.length) % g.photos.length;
+  pmSetPhoto(pmIdx);
+}
+function pmSetPhoto(idx) {
+  const g = galleries[propDetails[pmKey].gallery]; if (!g) return;
+  pmIdx = idx;
+  document.getElementById('pm-main-img').src = g.photos[idx].src;
+  document.getElementById('pm-main-img').alt = g.photos[idx].caption;
+  document.getElementById('pm-img-counter').textContent = `${idx+1} / ${g.photos.length}`;
+  document.querySelectorAll('.pm-thumb').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.getElementById('pm-thumbs').children[idx]?.scrollIntoView({inline:'nearest',behavior:'smooth'});
+}
+function closePropModal() {
+  document.getElementById('prop-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  pmKey = null;
+}
+document.getElementById('prop-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closePropModal();
+});
+document.querySelectorAll('.prop-card[data-propkey]').forEach(card => {
+  card.addEventListener('click', e => {
+    if (e.target.closest('button,a,label,input')) return;
+    openPropModal(card.dataset.propkey);
+  });
+});
+
+let lbGalleryKey = null, lbGalleryIdx = 0;
+function openGallery(key, title) {
+  const g = galleries[key]; if (!g) return;
+  lbGalleryKey = key; lbGalleryIdx = 0;
+  lbShowPhoto();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function lbShowPhoto() {
+  const g = galleries[lbGalleryKey];
+  const p = g.photos[lbGalleryIdx];
+  const total = g.photos.length;
+  document.getElementById('lightbox-img').src = p.src;
+  document.getElementById('lightbox-img').alt = p.caption;
+  document.getElementById('lightbox-title').textContent = p.caption;
+  document.getElementById('lb-counter').textContent = (lbGalleryIdx + 1) + ' / ' + total;
+  document.getElementById('lb-prev').style.display = total > 1 ? 'block' : 'none';
+  document.getElementById('lb-next').style.display = total > 1 ? 'block' : 'none';
+}
+function lbNav(dir) {
+  const g = galleries[lbGalleryKey]; if (!g) return;
+  lbGalleryIdx = (lbGalleryIdx + dir + g.photos.length) % g.photos.length;
+  lbShowPhoto();
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+  lbGalleryKey = null;
+}
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target === e.currentTarget) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'ArrowLeft')  lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+/* SHARE */
+function toggleShare(btn) {
+  const p = btn.querySelector('.share-popup');
+  document.querySelectorAll('.share-popup.open').forEach(x => { if (x !== p) x.classList.remove('open'); });
+  p.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.btn-share')) document.querySelectorAll('.share-popup.open').forEach(p => p.classList.remove('open'));
+});
+function shareWA(t) { window.open('https://wa.me/?text=' + encodeURIComponent(t + ' — Panama Listings: ' + location.href)); }
+function shareTW(t) { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(t) + '&url=' + encodeURIComponent(location.href)); }
+function copyLink()  { navigator.clipboard.writeText(location.href).then(() => alert('¡Enlace copiado!')); }
+
+/* COMPARATOR */
+let sel = new Set();
+document.querySelectorAll('.compare-cb').forEach(cb => {
+  cb.addEventListener('change', () => {
+    const id = parseInt(cb.dataset.id);
+    if (cb.checked) {
+      if (sel.size >= 3) { cb.checked = false; alert('Máximo 3 propiedades.'); return; }
+      sel.add(id);
+    } else sel.delete(id);
+    document.getElementById('compare-count').textContent = sel.size;
+    document.getElementById('compare-bar').classList.toggle('visible', sel.size >= 2);
+  });
+});
+function openComparator() {
+  const ids = [...sel];
+  const cols = ids.map(id => {
+    const card = document.querySelector(`.compare-cb[data-id="${id}"]`)?.closest('.prop-card');
+    if (!card) return null;
+    const key = card.dataset.propkey;
+    const d   = propDetails[key] || {};
+    const img = card.querySelector('img');
+    const op  = (card.dataset.operacion || '').split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' / ');
+    const tipo = card.dataset.tipo || '—';
+    const precio = card.querySelector('.prop-price-tag')?.textContent.trim() || '—';
+    const tags = [...card.querySelectorAll('.prop-tag')].map(t => t.textContent.trim()).join(' · ');
+    return {
+      title:  d.title || card.getAttribute('aria-label') || '—',
+      imgSrc: img?.src || '',
+      tipo:   tipo.charAt(0).toUpperCase() + tipo.slice(1),
+      op,
+      precio,
+      loc:    d.location || '—',
+      tags:   tags || '—',
+    };
+  }).filter(Boolean);
+  if (!cols.length) return;
+  const ths  = cols.map(c => `<th style="background:#f7f8fa;color:var(--brand);font-size:0.82rem">${c.title}</th>`).join('');
+  const rows = [
+    ['Propiedad', cols.map(c => `<strong style="color:var(--brand)">${c.title}</strong>`)],
+    ['Imagen',    cols.map(c => c.imgSrc ? `<img src="${c.imgSrc}" alt="">` : '—')],
+    ['Tipo',      cols.map(c => c.tipo)],
+    ['Operación', cols.map(c => c.op)],
+    ['Precio',    cols.map(c => c.precio)],
+    ['Ubicación', cols.map(c => c.loc)],
+    ['Detalles',  cols.map(c => c.tags)],
+    ['Contacto',  cols.map(() => '<a href="https://wa.me/5078347509" style="color:var(--brand);font-weight:600">+507 834 7509</a>')],
+  ];
+  const body = rows.map(([l,cells]) => `<tr><th>${l}</th>${cells.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+  document.getElementById('compare-table-wrap').innerHTML =
+    `<table class="compare-table"><thead><tr><th></th>${ths}</tr></thead><tbody>${body}</tbody></table>`;
+  document.getElementById('compare-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeComparator() { document.getElementById('compare-modal').classList.remove('open'); document.body.style.overflow = ''; }
+function clearCompare() {
+  sel.clear();
+  document.querySelectorAll('.compare-cb').forEach(cb => cb.checked = false);
+  document.getElementById('compare-count').textContent = 0;
+  document.getElementById('compare-bar').classList.remove('visible');
+}
+
+/* CONTACT FORM */
+async function sendContact(e) {
+  e.preventDefault();
+  const name  = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  if (!name || !email) { alert('Por favor completa nombre y email.'); return; }
+  const phone = document.getElementById('cf-phone').value.trim();
+  const int   = document.getElementById('cf-interest').value;
+  const msg   = document.getElementById('cf-msg').value.trim();
+
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xykvjqwz', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        _subject: `Consulta de ${name} — Panama Listings`,
+        nombre: name, email, telefono: phone, interes: int, mensaje: msg
+      })
+    });
+    if (res.ok) {
+      document.getElementById('contact-form').reset();
+      const s = document.getElementById('form-success');
+      s.classList.add('visible');
+      setTimeout(() => s.classList.remove('visible'), 5000);
+    } else {
+      alert('Error al enviar. Por favor intenta de nuevo.');
+    }
+  } catch {
+    alert('Error de conexión. Por favor intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+/* ESC */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLightbox(); closeComparator(); closeMobileMenu(); closePropModal(); }
+});
+
+/* ---- LEAFLET MAP ---- */
+window.addEventListener('load', function() {
+  if (!document.getElementById('map') || typeof L === 'undefined') return;
+
+  const waLogoSVG = `<svg viewBox="0 0 24 24" fill="white" style="width:14px;height:14px;margin-right:5px;vertical-align:middle;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+  const props = [
+    {
+      lat: 8.99270, lng: -79.51490,
+      title: 'PH Torres del Pacífico A',
+      badge: 'En Venta',
+      desc: 'Apartamento · 220 m² · 4 Rec · 5 Baños · Av. Balboa, Marbella · $350,000',
+      wa: 'https://wa.me/5078347509?text=Hola!%20Estoy%20interesado%20en%20PH%20Torres%20del%20Pac%C3%ADfico%20A'
+    },
+    {
+      lat: 7.98994, lng: -80.41335,
+      title: 'Terreno en Venta — Chitré',
+      badge: 'En Venta',
+      desc: 'Terreno · 10 Ha · 100,000 m² · Chitré, Herrera · Precio negociable',
+      wa: 'https://wa.me/5078347509?text=Hola!%20Estoy%20interesado%20en%20el%20terreno%20en%20Chitr%C3%A9'
+    },
+    {
+      lat: 8.98980, lng: -79.52010,
+      title: 'PH Altavista Towers',
+      badge: 'En Alquiler',
+      desc: 'Apartamento · 103 m² · 3 Rec · 2 Baños · 2 Parking · El Bosque · $1,000/mes',
+      wa: 'https://wa.me/5078347509?text=Hola!%20Estoy%20interesado%20en%20PH%20Altavista%20Towers'
+    }
+  ];
+
+  // Custom pin icon
+  function makeIcon(badge) {
+    const color = badge === 'En Alquiler' ? '#1a7a42' : '#1e3058';
+    return L.divIcon({
+      className: '',
+      html: `<div style="position:relative;width:38px;height:38px;">
+        <div style="background:${color};width:38px;height:38px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+             box-shadow:0 4px 14px rgba(0,0,0,0.25);border:2.5px solid white;"></div>
+        <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-62%);font-size:15px;">🏠</span>
+      </div>`,
+      iconSize: [38, 38], iconAnchor: [19, 38], popupAnchor: [0, -40]
+    });
+  }
+
+  // Init map centered on Panama
+  const map = L.map('map', {
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: true
+  }).setView([8.9940, -79.5197], 7);
+
+  // Tile layer — OpenStreetMap (reliable, no key needed)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(map);
+
+  const markers = [];
+  props.forEach(p => {
+    const badgeColor = p.badge === 'En Alquiler'
+      ? 'background:rgba(37,211,102,0.15);color:#1a7a42;border:1px solid rgba(37,211,102,0.35);'
+      : 'background:#eef1f7;color:#1e3058;border:1px solid #c8d3e8;';
+
+    const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.badge) })
+      .addTo(map)
+      .bindPopup(`
+        <div style="font-family:'Inter',sans-serif;min-width:210px;padding:2px 0 4px;">
+          <span style="display:inline-block;${badgeColor}padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">${p.badge}</span>
+          <strong style="font-family:'Playfair Display',serif;font-size:1rem;color:#1e3058;display:block;margin-bottom:5px;line-height:1.3;">${p.title}</strong>
+          <p style="font-size:0.78rem;color:#6b7a8d;margin-bottom:12px;line-height:1.5;">${p.desc}</p>
+          <a href="${p.wa}" target="_blank" rel="noopener"
+             style="background:#25D366;color:white;padding:7px 14px;border-radius:6px;
+                    font-size:0.78rem;font-weight:700;display:inline-flex;align-items:center;
+                    text-decoration:none;">
+            ${waLogoSVG} WhatsApp
+          </a>
+        </div>
+      `, { maxWidth: 270, className: 'pl-popup' });
+    markers.push(m);
+  });
+
+  // Fit map to show all markers with padding
+  const group = L.featureGroup(markers);
+  map.fitBounds(group.getBounds().pad(0.3));
+
+  // Fix tile alignment after layout renders
+  map.invalidateSize();
+  setTimeout(() => map.invalidateSize(), 200);
+  setTimeout(() => map.invalidateSize(), 800);
+});
+
+/* ---- MORTGAGE CALCULATOR ---- */
+function calcMortgage() {
+  const price    = parseFloat(document.getElementById('calc-price').value) || 0;
+  const downPct  = parseFloat(document.getElementById('calc-down').value)  || 20;
+  const ratePct  = parseFloat(document.getElementById('calc-rate').value)  || 6;
+  const years    = parseInt(document.getElementById('calc-term').value)    || 25;
+
+  const loan     = price * (1 - downPct / 100);
+  const r        = ratePct / 100 / 12;
+  const n        = years * 12;
+  const monthly  = r > 0 ? loan * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1) : loan/n;
+  const total    = monthly * n;
+
+  const fmt = v => '$' + Math.round(v).toLocaleString('en-US');
+  document.getElementById('calc-monthly').textContent = fmt(monthly);
+  document.getElementById('calc-loan').textContent    = fmt(loan);
+  document.getElementById('calc-total').textContent   = fmt(total);
+}
+calcMortgage(); // initial render
+</script>
+</body>
+</html>

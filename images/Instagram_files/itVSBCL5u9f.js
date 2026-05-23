@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("LSDisableSyncForSyncGroup",[],(function(t,n,r,o,a,i){function e(){var e=arguments,t=e[e.length-1],n=[],r=[];return t.sequence([function(n){return t.forEach(t.db.table(1).fetch([[[e[0]]]]),function(e){var n=e.update,r=e.item;return n({minTimeToSyncTimestampMs:t.i64.cast([955,779832320]),canIgnoreTimestamp:!1})})},function(e){return t.resolve(r)}])}e.__sproc_name__="LSCoreDisableSyncForSyncGroupStoredProcedure",e.__tables__=["sync_groups"],a.exports=e}),null);
