@@ -340,14 +340,13 @@
     "parking": null,
     "amoblado": false,
     "extras": [
-      "7 hectáreas",
-      "A 100 m de la estación de Metro Cáceres"
+      "7 hectáreas"
     ],
     "resumen": "Terreno de 7 hectáreas en Cerro Silvestre, Arraiján.",
-    "descripcion": "Terreno de 7 hectáreas (70,000 m²) en Cerro Silvestre, Arraiján, Panamá Oeste, a 100 m de la estación de Metro Cáceres. Precio negociable.",
-    "portada": "arraijan/1.jpg",
+    "descripcion": "Terreno de 7 hectáreas (70,000 m²) en Cerro Silvestre, Arraiján, Panamá Oeste. Precio negociable. Fotografías y ubicación disponibles bajo consulta.",
+    "portada": "arraijan/tarjeta-zona.png",
     "fotos": [
-      "arraijan/1.jpg"
+      "arraijan/tarjeta-zona.png"
     ],
     "ubicacion": {
       "texto": "Cerro Silvestre, Arraiján",
@@ -364,8 +363,7 @@
     },
     "corredor": null,
     "pendientes": [
-      "La única foto es el flyer, que muestra el contorno de la parcela sobre una vista satelital y la estación de Metro Cáceres: contradice la decisión de no publicar la ubicación exacta. No se cambió porque las fotos no debían tocarse.",
-      "La característica «A 100 m de la estación de Metro Cáceres» también acota la ubicación. Se conservó porque las características no debían tocarse."
+      "Imagen temporal: tarjeta gráfica de la zona. Reemplazar cuando haya fotos que no identifiquen la parcela."
     ]
   }
 ]

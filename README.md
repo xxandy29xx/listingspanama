@@ -49,7 +49,7 @@ Envían a Formspree (`formspreeId` en `data/sitio.json`) con: nombre, teléfono,
 
 ## Publicación
 
-`vercel.json` indica a Vercel que ejecute `npm run build` y sirva `dist/`. La web publicada antes del rediseño está en el tag `respaldo-web-2026-11-11`; el `index.html` de la raíz es esa versión anterior y deja de servirse cuando Vercel use `dist/`.
+`vercel.json` indica a Vercel que ejecute `npm run build` y sirva `dist/`. La web publicada antes del rediseño está en el tag `respaldo-web-2026-11-11`.
 
 ## Ubicaciones
 
@@ -69,4 +69,4 @@ Pendiente, requiere cuentas externas:
 - **Formspree**: prueba real de recepción en el correo (la hace el propietario). El código está validado; la recepción no.
 - **GA4 / Clarity**: sin IDs. Mientras estén vacíos o con formato inválido no se carga ningún script (el build avisa si el formato es incorrecto).
 - **Vercel**: `vercel.json` está en la raíz, `buildCommand` coincide con el script `build` y `outputDirectory` con `dist/`. No hay acceso a los registros de Vercel: falta confirmar el comando ejecutado y el commit desplegado tras el primer deploy de esta rama. El repositorio también tiene GitHub Pages activo, que sirve la raíz sin build (la web anterior).
-- **Arraiján**: la única foto (flyer) y la característica «a 100 m del Metro Cáceres» delatan la ubicación del terreno.
+- **Arraiján**: usa una tarjeta gráfica temporal (`node scripts/tarjeta-zona.mjs`); faltan fotos que no identifiquen la parcela.
