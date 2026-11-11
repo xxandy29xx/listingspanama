@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Propuesta de portada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="nota-propuesta">Propuesta de diseño. Los textos y datos son de muestra, tomados de la web actual, y están pendientes de confirmar.</div>
+
+<header class="cabecera">
+  <div class="contenedor">
+    <a class="marca" href="portada.html">Panama <span>Listings</span></a>
+    <nav class="nav">
+      <a class="solo-escritorio" href="#propiedades">Propiedades</a>
+      <a class="solo-escritorio" href="#como-funciona">Cómo funciona</a>
+      <a class="solo-escritorio" href="#corredores">Para corredores</a>
+      <a class="boton wa chico" href="#">WhatsApp</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="portada">
+  <div class="contenedor">
+    <div class="portada-rejilla">
+      <div>
+        <span class="etiqueta">Propiedades en Panamá</span>
+        <h1>Encuentra la propiedad y habla con <em>quien la representa</em>.</h1>
+        <p class="bajada">Reunimos propiedades seleccionadas en venta y alquiler, y te conectamos por WhatsApp con el corredor aliado que la tiene a cargo.</p>
+      </div>
+      <figure class="foto-portada">
+        <img src="../images/pacifico/bahia.jpg" alt="Vista a la bahía desde PH Torre del Pacífico A, Avenida Balboa">
+        <figcaption>
+          <span><strong>PH Torre del Pacífico A</strong>Avenida Balboa · $320,000</span>
+          <a href="ficha.html">Ver ficha →</a>
+        </figcaption>
+      </figure>
+    </div>
+
+    <form class="buscador" onsubmit="return false">
+      <label class="ancho">Zona o proyecto
+        <input type="text" placeholder="Costa del Este, San Francisco…">
+      </label>
+      <label>Tipo
+        <select><option>Todos</option><option>Apartamento</option><option>Casa</option><option>Terreno</option></select>
+      </label>
+      <label>Operación
+        <select><option>Venta</option><option>Alquiler</option></select>
+      </label>
+      <label class="ancho">Precio máximo
+        <select><option>Sin máximo</option><option>$250,000</option><option>$500,000</option><option>$1,000,000</option></select>
+      </label>
+      <button class="boton">Buscar</button>
+    </form>
+  </div>
+</section>
+
+<section class="seccion" id="propiedades">
+  <div class="contenedor">
+    <div class="seccion-titulo">
+      <div>
+        <span class="etiqueta">Catálogo</span>
+        <h2>Propiedades disponibles</h2>
+      </div>
+      <p>8 propiedades</p>
+    </div>
+    <div class="filtros">
+      <button class="activo">Todas</button><button>En venta</button><button>En alquiler</button><button>Apartamentos</button><button>Casas</button><button>Terrenos</button>
+    </div>
+
+    <div class="rejilla">
+      <article class="tarjeta">
+        <a class="foto" href="ficha.html">
+          <img src="../images/pacifico/bahia.jpg" alt="PH Torre del Pacífico A" loading="lazy">
+          <span class="chip">En venta</span><span class="cuenta-fotos">9 fotos</span>
+        </a>
+        <div class="cuerpo">
+          <div class="precio">$320,000</div>
+          <h3><a href="ficha.html">PH Torre del Pacífico A</a></h3>
+          <p class="zona">Avenida Balboa, Ciudad de Panamá</p>
+          <ul class="datos"><li>220 <span>m²</span></li><li>4 <span>recámaras</span></li><li>5 <span>baños</span></li><li>2 <span>parking</span></li></ul>
+        </div>
+        <div class="acciones"><a class="boton claro" href="ficha.html">Ver ficha</a><a class="boton wa" href="#" aria-label="Consultar por WhatsApp">WhatsApp</a></div>
+      </article>
+
+      <article class="tarjeta">
+        <a class="foto" href="ficha.html">
+          <img src="../images/coco/2.jpg" alt="PH Long Beach" loading="lazy">
+          <span class="chip">En venta</span><span class="cuenta-fotos">8 fotos</span>
+        </a>
+        <div class="cuerpo">
+          <div class="precio">$450,000</div>
+          <h3><a href="ficha.html">PH Long Beach</a></h3>
+          <p class="zona">Coco del Mar, San Francisco</p>
+          <ul class="datos"><li>205 <span>m²</span></li><li>3 <span>recámaras</span></li><li>4 <span>baños</span></li><li>Amoblado</li></ul>
+        </div>
+        <div class="acciones"><a class="boton claro" href="ficha.html">Ver ficha</a><a class="boton wa" href="#">WhatsApp</a></div>
+      </article>
+
+      <article class="tarjeta">
+        <a class="foto" href="ficha.html">
+          <img src="../images/altavista/exterior.jpg" alt="PH Altavista Towers" loading="lazy">
+          <span class="chip">Venta o alquiler</span><span class="cuenta-fotos">20 fotos</span>
+        </a>
+        <div class="cuerpo">
+          <div class="precio">$197,000 <small>· $1,000/mes</small></div>
+          <h3><a href="ficha.html">PH Altavista Towers</a></h3>
+          <p class="zona">El Bosque, Ricardo J. Alfaro</p>
+          <ul class="datos"><li>103 <span>m²</span></li><li>3 <span>recámaras</span></li><li>2 <span>baños</span></li><li>2 <span>parking</span></li></ul>
+        </div>
+        <div class="acciones"><a class="boton claro" href="ficha.html">Ver ficha</a><a class="boton wa" href="#">WhatsApp</a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="como-funciona" style="padding-top:0">
+  <div class="contenedor">
+    <div class="seccion-titulo"><div><span class="etiqueta">Cómo funciona</span><h2>De la búsqueda a la visita</h2></div></div>
+    <div class="pasos">
+      <div class="paso"><h3>Explora</h3><p>Cada propiedad tiene su página con fotos, datos y ubicación.</p></div>
+      <div class="paso"><h3>Consulta</h3><p>Escribe por WhatsApp o deja tus datos. El mensaje ya indica qué propiedad te interesa.</p></div>
+      <div class="paso"><h3>Te atiende un corredor aliado</h3><p>Te conectamos con el corredor que representa la propiedad para coordinar la visita.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="corredores" style="padding-top:0">
+  <div class="contenedor">
+    <div class="franja">
+      <div><h2>¿Eres corredor de bienes raíces?</h2><p>Publica tus propiedades y recibe consultas con la propiedad y el origen identificados.</p></div>
+      <a class="boton" href="#">Quiero publicar</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="pie"><div class="contenedor">Panama Listings es una plataforma de marketing inmobiliario. Las propiedades son representadas por corredores aliados. · Mapa, calculadora hipotecaria y comparador se conservan (no incluidos en esta muestra).</div></footer>
+</body>
+</html>

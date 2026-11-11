@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Propuesta de ficha de propiedad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="nota-propuesta">Propuesta de diseño. Datos de muestra tomados de la web actual, pendientes de confirmar.</div>
+
+<header class="cabecera">
+  <div class="contenedor">
+    <a class="marca" href="portada.html">Panama <span>Listings</span></a>
+    <nav class="nav">
+      <a class="solo-escritorio" href="portada.html#propiedades">Propiedades</a>
+      <a class="boton wa chico" href="#">WhatsApp</a>
+    </nav>
+  </div>
+</header>
+
+<main class="contenedor">
+  <p class="migas"><a href="portada.html">Inicio</a> / <a href="portada.html#propiedades">Propiedades</a> / PH Torre del Pacífico A</p>
+
+  <div class="ficha-rejilla">
+    <div>
+      <div class="galeria">
+        <div class="principal">
+          <img id="foto" src="../images/pacifico/bahia.jpg" alt="Vista a la bahía">
+          <span class="cuenta-fotos" id="cuenta">1 / 6</span>
+        </div>
+        <div class="miniaturas" id="minis">
+          <img class="activa" src="../images/pacifico/bahia.jpg" alt="">
+          <img src="../images/pacifico/sala.jpg" alt="">
+          <img src="../images/pacifico/salon.jpg" alt="">
+          <img src="../images/pacifico/sala2.jpg" alt="">
+          <img src="../images/pacifico/vista-mar.jpg" alt="">
+          <img src="../images/torre/3.jpg" alt="">
+        </div>
+      </div>
+
+      <div class="ficha-cabeza">
+        <span class="etiqueta">Apartamento en venta</span>
+        <h1>PH Torre del Pacífico A</h1>
+        <p class="zona">Avenida Balboa, Ciudad de Panamá</p>
+        <div class="precio">$320,000</div>
+        <span class="ref">REF. LP-003</span>
+      </div>
+
+      <dl class="especificaciones">
+        <div><dt>Área</dt><dd>220 m²</dd></div>
+        <div><dt>Recámaras</dt><dd>4</dd></div>
+        <div><dt>Baños</dt><dd>5</dd></div>
+        <div><dt>Parking</dt><dd>2</dd></div>
+      </dl>
+
+      <section class="bloque">
+        <h2>Descripción</h2>
+        <p>Apartamento sobre la Avenida Balboa con vista a la Bahía de Panamá. 220 m² distribuidos en cuatro recámaras y cinco baños, con dos estacionamientos.</p>
+      </section>
+
+      <section class="bloque">
+        <h2>Ubicación</h2>
+        <div class="mapa-falso">Mapa interactivo de la zona<br>(se carga solo al llegar a esta sección)</div>
+      </section>
+
+      <section class="bloque">
+        <h2>Cuota estimada</h2>
+        <p>Con 20 % de prima, 6 % de interés y 25 años: <strong>$1,649 al mes</strong>. La calculadora actual se conserva aquí, con el precio de la propiedad ya cargado.</p>
+      </section>
+    </div>
+
+    <aside class="lateral">
+      <div class="aliado">
+        <strong>Propiedad representada por un corredor aliado</strong>
+        Panama Listings difunde esta propiedad y te pone en contacto con el corredor a cargo.
+      </div>
+      <form class="formulario" onsubmit="return false">
+        <h2>Consultar esta propiedad</h2>
+        <label>Nombre<input type="text" autocomplete="name"></label>
+        <label>WhatsApp o teléfono<input type="tel" autocomplete="tel"></label>
+        <label>Correo<input type="email" autocomplete="email"></label>
+        <label>Mensaje<textarea rows="3">Me interesa PH Torre del Pacífico A (REF. LP-003).</textarea></label>
+        <button class="boton">Enviar consulta</button>
+        <a class="boton wa" href="#">Escribir por WhatsApp</a>
+        <small>El formulario envía también la propiedad, la página y el origen de la visita (UTM).</small>
+      </form>
+    </aside>
+  </div>
+</main>
+
+<footer class="pie"><div class="contenedor">Panama Listings es una plataforma de marketing inmobiliario. Las propiedades son representadas por corredores aliados.</div></footer>
+
+<div class="barra-movil">
+  <div><div class="precio">$320,000</div><small>PH Torre del Pacífico A</small></div>
+  <a class="boton claro chico" href="#">Consultar</a>
+  <a class="boton wa chico" href="#">WhatsApp</a>
+</div>
+
+<script>
+  var minis = document.querySelectorAll('#minis img');
+  minis.forEach(function (m, i) {
+    m.addEventListener('click', function () {
+      document.getElementById('foto').src = m.src;
+      document.getElementById('cuenta').textContent = (i + 1) + ' / ' + minis.length;
+      minis.forEach(function (x) { x.classList.toggle('activa', x === m); });
+    });
+  });
+</script>
+</body>
+</html>

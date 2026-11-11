@@ -1,0 +1,12 @@
+{
+  "name": "listingspanama-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs && python3 -m http.server 4174 --directory dist"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

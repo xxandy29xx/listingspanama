@@ -1,0 +1,337 @@
+[
+  {
+    "id": "torre",
+    "ref": "LP-003",
+    "slug": "pacifico-avenida-balboa",
+    "titulo": "PH Torres del Pacífico A",
+    "tipo": "apartamento",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": 320000
+      }
+    ],
+    "zona": "Avenida Balboa, Marbella",
+    "ciudad": "Ciudad de Panamá",
+    "area_m2": 220,
+    "recamaras": 4,
+    "banos": 5,
+    "parking": 2,
+    "amoblado": false,
+    "extras": [],
+    "resumen": "Apartamento de 220 m² con vista a la Bahía de Panamá.",
+    "descripcion": "Apartamento sobre la Avenida Balboa con vista a la Bahía de Panamá. 220 m² distribuidos en 4 recámaras y 5 baños, con 2 estacionamientos.",
+    "portada": "pacifico/bahia.jpg",
+    "fotos": [
+      "torre/5.jpg",
+      "torre/3.jpg",
+      "torre/4.jpg",
+      "torre/6.jpg",
+      "torre/7.jpg",
+      "torre/8.jpg",
+      "torre/9.jpg",
+      "torre/2.jpg"
+    ],
+    "coordenadas": {
+      "lat": 8.9927,
+      "lng": -79.5149,
+      "confirmada": false
+    },
+    "corredor": null,
+    "destacada": true,
+    "pendientes": [
+      "Precio: tarjeta y flyer dicen $320,000; el mapa de la web anterior decía $350,000.",
+      "Tipo: la ficha anterior decía «Penthouse»; el flyer dice «Apartamento».",
+      "Coordenadas del mapa: no parecen caer sobre la Avenida Balboa.",
+      "La descripción anterior mencionaba piscina, gimnasio y canchas; se retiró hasta confirmarlo."
+    ]
+  },
+  {
+    "id": "coco",
+    "ref": "LP-002",
+    "slug": "long-beach-coco-del-mar",
+    "titulo": "Coco del Mar — PH Long Beach",
+    "tipo": "apartamento",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": 450000
+      }
+    ],
+    "zona": "San Francisco",
+    "ciudad": "Ciudad de Panamá",
+    "area_m2": 205,
+    "recamaras": 3,
+    "banos": 4,
+    "parking": 2,
+    "amoblado": true,
+    "extras": [],
+    "resumen": "Penthouse amoblado de 205 m² en San Francisco.",
+    "descripcion": "Penthouse amoblado en PH Long Beach, Coco del Mar. 205 m², 3 recámaras, 4 baños y 2 estacionamientos.",
+    "portada": "coco/2.jpg",
+    "fotos": [
+      "coco/2.jpg",
+      "coco/3.jpg",
+      "coco/4.jpg",
+      "coco/5.jpg",
+      "coco/6.jpg",
+      "coco/7.jpg",
+      "coco/8.jpg"
+    ],
+    "coordenadas": null,
+    "corredor": null,
+    "pendientes": [
+      "Título: mezcla barrio (Coco del Mar) y edificio (PH Long Beach); confirmar cómo debe llamarse.",
+      "Sin coordenadas para el mapa.",
+      "La descripción anterior decía «frente al mar» y «acabados de lujo»; se retiró hasta confirmarlo."
+    ]
+  },
+  {
+    "id": "altavista",
+    "ref": "LP-001",
+    "slug": "altavista-towers-el-bosque",
+    "titulo": "PH Altavista Towers",
+    "tipo": "apartamento",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": 197000
+      },
+      {
+        "tipo": "alquiler",
+        "precio": 1000
+      }
+    ],
+    "zona": "El Bosque, Ricardo J. Alfaro",
+    "ciudad": "Ciudad de Panamá",
+    "area_m2": 103,
+    "recamaras": 3,
+    "banos": 2,
+    "parking": 2,
+    "amoblado": false,
+    "extras": [
+      "Pisos de madera laminada",
+      "Aire acondicionado en las recámaras",
+      "Walk-in closet",
+      "Balcón"
+    ],
+    "resumen": "Apartamento de 103 m² en El Bosque, en venta o alquiler.",
+    "descripcion": "Apartamento en El Bosque disponible en venta o en alquiler. 103 m², 3 recámaras, 2 baños y 2 estacionamientos.",
+    "portada": "altavista/exterior.jpg",
+    "fotos": [
+      "altavista/exterior.jpg",
+      "altavista/2.jpg",
+      "altavista/3.jpg",
+      "altavista/4.jpg",
+      "altavista/5.jpg",
+      "altavista/6.jpg",
+      "altavista/7.jpg",
+      "altavista/8.jpg",
+      "altavista/9.jpg",
+      "altavista/10.jpg"
+    ],
+    "coordenadas": {
+      "lat": 8.9898,
+      "lng": -79.5201,
+      "confirmada": false
+    },
+    "corredor": null,
+    "pendientes": [
+      "Coordenadas del mapa: no parecen caer en El Bosque / Ricardo J. Alfaro.",
+      "Confirmar las características heredadas de la descripción anterior (pisos, A/C, walk-in closet, balcón)."
+    ]
+  },
+  {
+    "id": "valencia",
+    "ref": "LP-004",
+    "slug": "villa-valencia-costa-sur",
+    "titulo": "PH Villa Valencia",
+    "tipo": "casa",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": 595000
+      }
+    ],
+    "zona": "Costa Sur",
+    "ciudad": "Ciudad de Panamá",
+    "area_m2": 468,
+    "recamaras": 5,
+    "banos": 5.5,
+    "parking": 5,
+    "amoblado": true,
+    "extras": [],
+    "resumen": "Casa amoblada de 468 m² en Costa Sur.",
+    "descripcion": "Casa amoblada en Costa Sur. 468 m², 5 recámaras, 5.5 baños y 5 estacionamientos.",
+    "portada": "valencia/2.jpg",
+    "fotos": [
+      "valencia/2.jpg",
+      "valencia/3.jpg",
+      "valencia/4.jpg",
+      "valencia/5.jpg",
+      "valencia/6.jpg",
+      "valencia/7.jpg",
+      "valencia/8.jpg"
+    ],
+    "coordenadas": null,
+    "corredor": null,
+    "pendientes": [
+      "Falta una foto limpia de la fachada (la única está dentro del flyer).",
+      "Sin coordenadas para el mapa."
+    ]
+  },
+  {
+    "id": "waterview",
+    "ref": "LP-005",
+    "slug": "waterview-san-francisco",
+    "titulo": "PH Waterview",
+    "tipo": "apartamento",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": 187000
+      }
+    ],
+    "zona": "San Francisco, Ave. Israel",
+    "ciudad": "Ciudad de Panamá",
+    "area_m2": 110,
+    "recamaras": 3,
+    "banos": 3,
+    "parking": 2,
+    "amoblado": true,
+    "extras": [],
+    "resumen": "Apartamento amoblado de 110 m² sobre la Avenida Israel.",
+    "descripcion": "Apartamento amoblado en San Francisco, sobre la Avenida Israel. 110 m², 3 recámaras, 3 baños y 2 estacionamientos.",
+    "portada": "waterview/2.jpg",
+    "fotos": [
+      "waterview/2.jpg",
+      "waterview/3.jpg",
+      "waterview/4.jpg",
+      "waterview/5.jpg",
+      "waterview/6.jpg",
+      "waterview/7.jpg",
+      "waterview/8.jpg"
+    ],
+    "coordenadas": null,
+    "corredor": null,
+    "pendientes": [
+      "Tipo: la ficha anterior decía «Penthouse»; el flyer dice «Apartamento».",
+      "Sin coordenadas para el mapa."
+    ]
+  },
+  {
+    "id": "zeus",
+    "ref": "LP-006",
+    "slug": "torre-zeus-costa-del-este",
+    "titulo": "Torre Zeus",
+    "tipo": "apartamento",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": 749000
+      }
+    ],
+    "zona": "Costa del Este",
+    "ciudad": "Ciudad de Panamá",
+    "area_m2": 428,
+    "recamaras": 5,
+    "banos": 6,
+    "parking": 3,
+    "amoblado": false,
+    "extras": [],
+    "resumen": "Apartamento de 428 m² en Costa del Este.",
+    "descripcion": "Apartamento en Torre Zeus, Costa del Este. 428 m², 5 recámaras, 6 baños y 3 estacionamientos.",
+    "portada": "zeus/2.jpg",
+    "fotos": [
+      "zeus/2.jpg",
+      "zeus/3.jpg",
+      "zeus/4.jpg",
+      "zeus/5.jpg",
+      "zeus/6.jpg",
+      "zeus/7.jpg"
+    ],
+    "coordenadas": null,
+    "corredor": null,
+    "pendientes": [
+      "La descripción anterior decía «ultra lujo» y «amenidades de clase mundial»; se retiró hasta tener el detalle real de amenidades.",
+      "Sin coordenadas para el mapa."
+    ]
+  },
+  {
+    "id": "chitre",
+    "ref": "LP-007",
+    "slug": "terreno-chitre",
+    "titulo": "Terreno en Chitré",
+    "tipo": "terreno",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": null
+      }
+    ],
+    "zona": "Chitré, Herrera",
+    "ciudad": "Chitré",
+    "area_m2": 100000,
+    "recamaras": null,
+    "banos": null,
+    "parking": null,
+    "amoblado": false,
+    "extras": [
+      "10 hectáreas",
+      "Urbanizable"
+    ],
+    "resumen": "Terreno de 10 hectáreas en Chitré, Herrera.",
+    "descripcion": "Terreno de 10 hectáreas (100,000 m²) en Chitré, provincia de Herrera. Precio negociable.",
+    "portada": "chitre/aerea.jpg",
+    "fotos": [
+      "chitre/aerea.jpg"
+    ],
+    "coordenadas": {
+      "lat": 7.98994,
+      "lng": -80.41335,
+      "confirmada": false
+    },
+    "corredor": null,
+    "pendientes": [
+      "El flyer menciona servicios básicos y fácil acceso; confirmar antes de publicarlo como característica.",
+      "Precio: solo «Negociable»; confirmar si se publica una cifra de referencia."
+    ]
+  },
+  {
+    "id": "arraijan",
+    "ref": "LP-008",
+    "slug": "arraijan",
+    "titulo": "Terreno en Arraiján",
+    "tipo": "terreno",
+    "operaciones": [
+      {
+        "tipo": "venta",
+        "precio": null
+      }
+    ],
+    "zona": "Cerro Silvestre, Arraiján",
+    "ciudad": "Arraiján",
+    "area_m2": 70000,
+    "recamaras": null,
+    "banos": null,
+    "parking": null,
+    "amoblado": false,
+    "extras": [
+      "7 hectáreas",
+      "A 100 m de la estación de Metro Cáceres"
+    ],
+    "resumen": "Terreno de 7 hectáreas en Cerro Silvestre, Arraiján.",
+    "descripcion": "Terreno de 7 hectáreas (70,000 m²) en Cerro Silvestre, Arraiján, Panamá Oeste, a 100 m de la estación de Metro Cáceres. Precio negociable.",
+    "portada": "arraijan/1.jpg",
+    "fotos": [
+      "arraijan/1.jpg"
+    ],
+    "coordenadas": null,
+    "corredor": null,
+    "pendientes": [
+      "La única imagen es el flyer con texto incrustado; falta una foto limpia.",
+      "Precio: solo «Negociable»; confirmar si se publica una cifra de referencia.",
+      "Sin coordenadas para el mapa."
+    ]
+  }
+]
