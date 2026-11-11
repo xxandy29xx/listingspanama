@@ -88,7 +88,65 @@
   $$('[data-abrir-menu]').forEach(function (b) { b.addEventListener('click', function () { menu.showModal(); }); });
   if (menu) menu.addEventListener('click', function (e) { if (e.target.closest('a')) menu.close(); });
 
+  /* ---------- Encabezado: transparente sobre la portada, sólido al bajar ---------- */
+  var cabecera = $('.cabecera');
+  if (cabecera && document.body.classList.contains('portada')) {
+    var fijar = function () { cabecera.classList.toggle('solida', window.scrollY > 24); };
+    window.addEventListener('scroll', fijar, { passive: true });
+    fijar();
+  }
+
+  /* ---------- Fotografías de la portada ----------
+     La primera viene en el HTML. Las demás se descargan de una en una, justo antes de
+     mostrarse, así que nunca bloquean la carga ni el uso de la página. */
+  var heroEl = $('[data-fondos]');
+  if (heroEl) {
+    var fondos = $$('.hero-fondos img', heroEl);
+    var iFondo = 0, reloj = null;
+    var sinMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var pausado = sinMovimiento;
+    var botonPausa = $('[data-fondo-pausa]', heroEl);
+    var preparar = function (img, listo) {
+      if (!img.dataset.src) return listo(true);
+      var fin = function (ok) { img.onload = img.onerror = null; listo(ok); };
+      img.onload = function () { fin(true); };
+      img.onerror = function () { fin(false); };
+      img.srcset = img.dataset.srcset; img.src = img.dataset.src;
+      delete img.dataset.src;
+    };
+    var mostrarFondo = function (n) {
+      var destino = (n + fondos.length) % fondos.length;
+      preparar(fondos[destino], function (ok) {
+        if (!ok) return; // si una foto falla se conserva la actual
+        fondos[iFondo].classList.remove('activo');
+        iFondo = destino;
+        fondos[iFondo].classList.add('activo');
+        $('[data-fondo-n]', heroEl).textContent = iFondo + 1;
+      });
+    };
+    var programar = function () {
+      clearInterval(reloj);
+      if (!pausado && !document.hidden) reloj = setInterval(function () { mostrarFondo(iFondo + 1); }, 6000);
+    };
+    var pintarPausa = function () {
+      botonPausa.setAttribute('aria-pressed', pausado ? 'true' : 'false');
+      botonPausa.setAttribute('aria-label', pausado ? 'Reanudar fotografías' : 'Pausar fotografías');
+    };
+    $$('[data-fondo]', heroEl).forEach(function (b) {
+      b.addEventListener('click', function () { mostrarFondo(iFondo + parseInt(b.dataset.fondo, 10)); programar(); });
+    });
+    botonPausa.addEventListener('click', function () { pausado = !pausado; pintarPausa(); programar(); });
+    document.addEventListener('visibilitychange', programar);
+    $('[data-controles]', heroEl).hidden = false;
+    pintarPausa();
+    // La secuencia empieza cuando la página ya terminó de cargar.
+    if (document.readyState === 'complete') programar(); else window.addEventListener('load', programar);
+  }
+
   /* ---------- Buscador, filtros y vistas del catálogo ---------- */
+  // Estado del mapa: se declara aquí porque el catálogo puede pedir el mapa al cargar (?vista=mapa).
+  var ESTILO_MAPA = 'https://tiles.openfreemap.org/styles/positron';
+  var colaMapa = null;
   var mapaCatalogo = null;
   var buscador = $('[data-buscador]');
   if (buscador) {
@@ -407,54 +465,82 @@
     calcular();
   });
 
-  /* ---------- Mapa (Leaflet se descarga solo cuando hace falta) ---------- */
-  var colaLeaflet = null;
-  function conLeaflet(listo) {
-    if (window.L) return listo();
-    if (colaLeaflet) return colaLeaflet.push(listo);
-    colaLeaflet = [listo];
+  /* ---------- Mapa ----------
+     MapLibre GL con el estilo claro «Positron» de OpenFreeMap (datos de OpenStreetMap):
+     sin clave de API ni costo. La librería se descarga solo cuando hace falta un mapa. */
+  function conMapas(listo) {
+    if (window.maplibregl) return listo();
+    if (colaMapa) return colaMapa.push(listo);
+    colaMapa = [listo];
     var css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    css.href = 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css';
     document.head.appendChild(css);
     var js = document.createElement('script');
-    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    js.onload = function () { colaLeaflet.forEach(function (f) { f(); }); };
+    js.src = 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js';
+    js.onload = function () { colaMapa.forEach(function (f) { f(); }); };
     js.onerror = function () { $$('[data-mapa]').forEach(function (m) { if (!m.firstElementChild) m.textContent = 'No se pudo cargar el mapa.'; }); };
     document.head.appendChild(js);
   }
+  // Polígono circular en metros, para sombrear una zona aproximada.
+  function circulo(p) {
+    var puntosC = [], km = p.radio / 1000;
+    for (var k = 0; k <= 64; k++) {
+      var a = (k / 64) * 2 * Math.PI;
+      puntosC.push([p.lng + (km / (111.32 * Math.cos(p.lat * Math.PI / 180))) * Math.cos(a), p.lat + (km / 110.574) * Math.sin(a)]);
+    }
+    return { type: 'Feature', properties: { id: p.id || '0' }, geometry: { type: 'Polygon', coordinates: [puntosC] } };
+  }
   function crearMapa(el) {
     var puntos = JSON.parse(el.dataset.mapa);
-    var mapa = null, capas = {}, pendientes = null;
+    var mapa = null, marcas = {}, listo = false, pendientes = null;
     var encuadrar = function (ids) {
-      var grupo = [];
+      var visibles = puntos.filter(function (p) { return !ids || !p.id || ids.indexOf(p.id) !== -1; });
       puntos.forEach(function (p) {
-        var ver = !ids || !p.id || ids.indexOf(p.id) !== -1;
-        if (ver) { capas[p.id || 0].addTo(mapa); grupo.push(capas[p.id || 0]); } else capas[p.id || 0].remove();
+        var m = marcas[p.id || '0'];
+        if (visibles.indexOf(p) !== -1) m.addTo(mapa); else { if (m.getPopup().isOpen()) m.togglePopup(); m.remove(); }
       });
-      mapa.invalidateSize();
-      if (grupo.length === 1 && !puntos.filter(function (p) { return capas[p.id || 0] === grupo[0]; })[0].radio) mapa.setView(grupo[0].getBounds ? grupo[0].getBounds().getCenter() : grupo[0].getLatLng(), 15);
-      else if (grupo.length) mapa.fitBounds(L.featureGroup(grupo).getBounds().pad(0.25));
+      if (mapa.getLayer('zonas')) {
+        var filtro = ['in', ['get', 'id'], ['literal', visibles.map(function (p) { return p.id || '0'; })]];
+        mapa.setFilter('zonas', filtro); mapa.setFilter('zonas-borde', filtro);
+      }
+      mapa.resize();
+      if (!visibles.length) return;
+      if (visibles.length === 1 && !visibles[0].radio) return mapa.jumpTo({ center: [visibles[0].lng, visibles[0].lat], zoom: 15.2 });
+      var caja = new maplibregl.LngLatBounds();
+      visibles.forEach(function (p) {
+        if (p.radio) circulo(p).geometry.coordinates[0].forEach(function (c) { caja.extend(c); });
+        else caja.extend([p.lng, p.lat]);
+      });
+      mapa.fitBounds(caja, { padding: 48, maxZoom: 15.2, animate: false });
     };
-    conLeaflet(function () {
-      var L = window.L;
+    conMapas(function () {
       el.textContent = '';
-      mapa = L.map(el, { scrollWheelZoom: false });
-      // Vista inicial: los círculos de zona necesitan que el mapa ya tenga una antes de añadirse.
-      mapa.setView([puntos[0].lat, puntos[0].lng], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 18
-      }).addTo(mapa);
+      try {
+        mapa = new maplibregl.Map({
+          container: el,
+          style: ESTILO_MAPA,
+          center: [puntos[0].lng, puntos[0].lat],
+          zoom: 12,
+          // La rueda y un solo dedo desplazan la página; el mapa pide Ctrl o dos dedos.
+          cooperativeGestures: true,
+          attributionControl: { compact: false },
+          locale: {
+            'CooperativeGesturesHandler.WindowsHelpText': 'Usa Ctrl + rueda para acercar el mapa',
+            'CooperativeGesturesHandler.MacHelpText': 'Usa ⌘ + rueda para acercar el mapa',
+            'CooperativeGesturesHandler.MobileHelpText': 'Usa dos dedos para mover el mapa',
+            'NavigationControl.ZoomIn': 'Acercar',
+            'NavigationControl.ZoomOut': 'Alejar'
+          }
+        });
+      } catch (err) { el.textContent = 'No se pudo cargar el mapa.'; return; }
+      mapa.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+      mapa.on('error', function () { if (!listo && !el.querySelector('canvas')) el.textContent = 'No se pudo cargar el mapa.'; });
       puntos.forEach(function (p) {
-        // Zona aproximada: área sombreada con borde punteado, sin pin. Edificio: punto sólido.
-        var m = p.radio
-          ? L.featureGroup([
-              L.circle([p.lat, p.lng], { radius: p.radio, color: '#142c3a', weight: 1.5, dashArray: '6 6', fillColor: '#142c3a', fillOpacity: 0.14 }),
-              // Anillo punteado de tamaño fijo para que la zona se vea también con el mapa alejado.
-              L.circleMarker([p.lat, p.lng], { radius: 14, color: '#142c3a', weight: 1.5, dashArray: '4 4', fillColor: '#142c3a', fillOpacity: 0.1 })
-            ])
-          : L.featureGroup([L.circleMarker([p.lat, p.lng], { radius: 9, color: '#ffffff', weight: 3, fillColor: '#142c3a', fillOpacity: 1 })]);
+        var punto = document.createElement('div');
+        punto.className = p.radio ? 'marcador zona' : 'marcador';
+        punto.setAttribute('role', 'button');
+        punto.setAttribute('aria-label', p.titulo + (p.radio ? ' — ubicación aproximada' : ''));
         var caja = document.createElement('div');
         caja.className = 'popup';
         var t = document.createElement('strong'); t.textContent = p.titulo; caja.appendChild(t);
@@ -463,12 +549,31 @@
         if (p.url) { var a = document.createElement('a'); a.href = p.url; a.textContent = 'Ver propiedad'; caja.appendChild(a); caja.appendChild(document.createTextNode(' · ')); }
         if (p.wa) { var w = document.createElement('a'); w.href = p.wa; w.target = '_blank'; w.rel = 'noopener noreferrer'; w.dataset.ref = p.ref; w.dataset.lugar = 'mapa'; w.textContent = 'Consultar ubicación por WhatsApp'; caja.appendChild(w); }
         if (p.maps) { var g = document.createElement('a'); g.href = p.maps; g.target = '_blank'; g.rel = 'noopener noreferrer'; g.textContent = 'Google Maps'; caja.appendChild(g); }
-        m.bindPopup(caja);
-        capas[p.id || 0] = m;
+        marcas[p.id || '0'] = new maplibregl.Marker({ element: punto })
+          .setLngLat([p.lng, p.lat])
+          .setPopup(new maplibregl.Popup({ offset: 16, maxWidth: '260px' }).setDOMContent(caja));
       });
-      encuadrar(pendientes);
+      mapa.on('load', function () {
+        listo = true;
+        // Ajuste de color sobre el estilo: tierra en blanco cálido y agua en azul grisáceo suave.
+        // Solo cambia la pintura de esas capas; marcadores, controles y textos no se tocan.
+        try {
+          mapa.getStyle().layers.forEach(function (capa) {
+            if (capa.type === 'background') mapa.setPaintProperty(capa.id, 'background-color', '#f2f1ec');
+            else if (capa.type === 'fill' && /^water/.test(capa.id)) mapa.setPaintProperty(capa.id, 'fill-color', '#c5d3da');
+          });
+        } catch (err) {}
+        var zonas = puntos.filter(function (p) { return p.radio; }).map(circulo);
+        if (zonas.length) {
+          // Zona aproximada: área sombreada con borde punteado. Nunca un pin sobre una parcela.
+          mapa.addSource('zonas', { type: 'geojson', data: { type: 'FeatureCollection', features: zonas } });
+          mapa.addLayer({ id: 'zonas', type: 'fill', source: 'zonas', paint: { 'fill-color': '#142c3a', 'fill-opacity': 0.12 } });
+          mapa.addLayer({ id: 'zonas-borde', type: 'line', source: 'zonas', paint: { 'line-color': '#142c3a', 'line-width': 1.5, 'line-dasharray': [3, 3] } });
+        }
+        encuadrar(pendientes);
+      });
     });
-    return { filtrar: function (ids) { if (mapa) encuadrar(ids); else pendientes = ids; } };
+    return { filtrar: function (ids) { pendientes = ids; if (listo) encuadrar(ids); } };
   }
   // Mapas de las fichas: se cargan al acercarse. El del catálogo, al elegir la vista «Mapa».
   if ('IntersectionObserver' in window) {

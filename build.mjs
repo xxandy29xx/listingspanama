@@ -49,7 +49,7 @@ const conPin = (p) => p.ubicacion.precision !== 'zona' && p.ubicacion.lat != nul
 const enZona = (p) => p.ubicacion.precision === 'zona' && p.ubicacion.zona;
 // «Marbella, Ciudad de Panamá» ya incluye la ciudad: no se repite.
 const lugar = (p) => (p.zona.includes(p.ciudad) ? p.zona : `${p.zona} · ${p.ciudad}`);
-const PRECISION = { edificio: 'Ubicación del edificio', residencial: 'Ubicación del residencial (no de la casa)' };
+const PRECISION = { residencial: 'Residencial (no la casa)' };
 const enlaceMaps = (p, clase = '') => `<a${clase ? ` class="${clase}"` : ''} href="${esc(p.ubicacion.mapsUrl)}" target="_blank" rel="noopener noreferrer" data-maps="${p.ref}">Ver en Google Maps</a>`;
 function datosDe(p) {
   const d = [];
@@ -70,14 +70,15 @@ const ico = (n) => `<svg class="ico" aria-hidden="true"><use href="#i-${n}"/></s
 const iconoWa = ico('wa');
 
 /* ---------- imágenes ---------- */
-const ANCHOS = [480, 960, 1600];
+const ANCHOS_FOTO = [480, 960, 1600];
+const ANCHOS_FONDO = [768, 1280, 1920];
 const memoria = new Map();
 let generadas = 0;
 async function fresco(origen, destino) {
   if (!existsSync(destino)) return false;
   return (await stat(destino)).mtimeMs >= (await stat(origen)).mtimeMs;
 }
-async function imagen(rel) {
+async function imagen(rel, ANCHOS = ANCHOS_FOTO) {
   if (memoria.has(rel)) return memoria.get(rel);
   const origen = path.join(raiz, 'images', rel);
   if (!existsSync(origen)) throw new Error(`Falta la imagen images/${rel}`);
@@ -154,7 +155,10 @@ for (const p of propiedades) {
 const destacada = propiedades.find((p) => p.destacada) ?? propiedades[0];
 const ogInicio = await imagenOg(destacada.portada, 'inicio');
 
-const heroInfo = await imagen(sitio.portada.imagen);
+const fondos = [];
+for (const f of sitio.fondos) fondos.push({ ...f, info: await imagen(f.imagen, ANCHOS_FONDO) });
+// En móvil la foto apaisada se recorta en vertical y se dibuja más ancha que la pantalla.
+const TAM_FONDO = '(max-width: 699px) 240vw, 100vw';
 
 /* ---------- piezas comunes ---------- */
 const organizacion = {
@@ -195,10 +199,10 @@ ${indexar ? `<link rel="canonical" href="${abs(ruta)}">` : '<meta name="robots" 
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 ${precarga}
 <link rel="stylesheet" href="${rutaCss}">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(d){d.classList.add('js');try{if(!sessionStorage.getItem('lp_intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('intro');sessionStorage.setItem('lp_intro','1')}}catch(e){}})(document.documentElement)</script>
 ${ld.map((o) => `<script type="application/ld+json">${json({ '@context': 'https://schema.org', ...o })}</script>`).join('\n')}
 </head>`;
 }
@@ -215,6 +219,8 @@ const iconos = `<svg width="0" height="0" style="position:absolute" aria-hidden=
 <symbol id="i-lista" viewBox="0 0 24 24"><path d="M4 5h7v6H4zM13 5h7v6h-7zM4 13h7v6H4zM13 13h7v6h-7z"/></symbol>
 <symbol id="i-mapa" viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></symbol>
 <symbol id="i-filtros" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+<symbol id="i-pausa" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+<symbol id="i-reproducir" viewBox="0 0 24 24"><path d="M8 5.500v13l11-6.500-11-6.500z"/></symbol>
 <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
 <symbol id="i-ampliar" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
 <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.700 13.600L3 21l4.500-1.200A9 9 0 1 0 12 3z"/><path d="M9 8.500c0 3.500 3 6.500 6.500 6.500l1-1.500-2-1-1 .800c-1-.500-1.800-1.300-2.300-2.300l.800-1-1-2L9 8.500z"/></symbol>
@@ -226,7 +232,8 @@ const NAV = [
   ['Publicar propiedad', '/contacto/?interes=publicar', ''],
   ['Contacto', '/contacto/', ''],
 ];
-const cabecera = () => `${iconos}
+const cabecera = () => `<div class="intro-pantalla" aria-hidden="true"><div class="intro-marca">Panama<span> Listings</span></div><div class="intro-barra"><span></span></div></div>
+${iconos}
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 <header class="cabecera">
   <div class="contenedor">
@@ -234,7 +241,7 @@ const cabecera = () => `${iconos}
     <nav class="nav" aria-label="Principal">
       ${NAV.map(([t, h, a]) => `<a href="${h}" ${a}>${t}</a>`).join('\n      ')}
     </nav>
-    <a class="boton chico cab-cta" href="${waGeneral}" target="_blank" rel="noopener noreferrer" data-lugar="cabecera">${iconoWa}<span>WhatsApp</span></a>
+    <a class="cab-cta" href="${waGeneral}" target="_blank" rel="noopener noreferrer" data-lugar="cabecera">${iconoWa}<span>WhatsApp</span></a>
     <button type="button" class="menu-boton" data-abrir-menu aria-haspopup="dialog" aria-controls="menu">Menú</button>
   </div>
 </header>
@@ -359,18 +366,32 @@ const inicio = `${cabeza({
   descripcion: descInicio,
   ruta: '/',
   og: ogInicio,
-  precarga: `<link rel="preload" as="image" href="${heroInfo.media}" imagesrcset="${heroInfo.srcset}" imagesizes="100vw" fetchpriority="high">`,
+  precarga: `<link rel="preload" as="image" href="${fondos[0].info.media}" imagesrcset="${fondos[0].info.srcset}" imagesizes="${TAM_FONDO}" fetchpriority="high">`,
   ld: [
     organizacion,
     { '@type': 'WebSite', name: sitio.nombre, url: abs('/'), inLanguage: 'es-PA', publisher: { '@id': abs('/#organizacion') } },
     { '@type': 'ItemList', name: 'Propiedades disponibles', itemListElement: propiedades.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(rutaDe(p)), name: p.titulo })) },
   ],
 })}
-<body>
+<body class="portada">
 ${cabecera()}
 <main id="contenido">
-<section class="hero">
-  ${img(heroInfo, { alt: sitio.portada.alt, sizes: '100vw', lazy: false, encuadre: sitio.portada.encuadre })}
+<section class="hero" data-fondos aria-roledescription="carrusel" aria-label="Fotografías de Panamá">
+  <div class="hero-fondos">
+${fondos.map((f, i) => {
+    const pos = `style="--pos:${f.encuadre};--pos-m:${f.encuadreMovil ?? f.encuadre}"`;
+    // Solo la primera foto viaja en el HTML inicial; las demás se cargan después, una a una.
+    return i === 0
+      ? `    <img class="activo" src="${f.info.media}" srcset="${f.info.srcset}" sizes="${TAM_FONDO}" alt="${esc(f.alt)}" fetchpriority="high" decoding="async" ${pos}>`
+      : `    <img data-src="${f.info.media}" data-srcset="${f.info.srcset}" sizes="${TAM_FONDO}" alt="${esc(f.alt)}" decoding="async" ${pos}>`;
+  }).join('\n')}
+  </div>
+  <div class="hero-controles" data-controles hidden>
+    <button type="button" data-fondo="-1" aria-label="Fotografía anterior">${ico('atras')}</button>
+    <button type="button" data-fondo-pausa aria-label="Pausar fotografías" aria-pressed="false">${ico('pausa')}${ico('reproducir')}</button>
+    <button type="button" data-fondo="1" aria-label="Fotografía siguiente">${ico('flecha')}</button>
+    <span aria-live="off"><span data-fondo-n>1</span> / ${fondos.length}</span>
+  </div>
   <div class="hero-texto contenedor">
     <h1>Tu próxima propiedad, <em>en Panamá.</em></h1>
     <p>Explora apartamentos, casas y terrenos en venta y alquiler.</p>
@@ -537,9 +558,10 @@ ${cabecera()}
 
       <section class="bloque">
         <h2>Ubicación</h2>
-        ${enZona(p) ? `<p>${esc(p.ubicacion.texto)} — ubicación aproximada. El mapa muestra solo la zona; la ubicación del inmueble se comparte al consultar.</p>
-        <p><a class="enlace" href="${waUbicacion(p)}" target="_blank" rel="noopener noreferrer" data-ref="${p.ref}" data-lugar="ubicacion">Consultar ubicación por WhatsApp ${ico('flecha')}</a></p>` : `<p>${esc(p.ubicacion.texto)}. <a class="enlace" href="${esc(p.ubicacion.mapsUrl)}" target="_blank" rel="noopener noreferrer" data-maps="${p.ref}">Ver en Google Maps ${ico('flecha')}</a></p>`}
-        ${conPin(p) || enZona(p) ? `<div class="mapa" data-mapa='${json([punto(p, false)]).replace(/'/g, '&#39;')}'>Cargando mapa…</div><p class="nota">${enZona(p) ? 'El área sombreada indica la zona, no el inmueble.' : PRECISION[p.ubicacion.precision] + '.'}</p>` : ''}
+        ${enZona(p) ? `<p class="direccion">${esc(p.ubicacion.texto)} — ubicación aproximada</p>
+        <p><a class="enlace" href="${waUbicacion(p)}" target="_blank" rel="noopener noreferrer" data-ref="${p.ref}" data-lugar="ubicacion">Consultar ubicación por WhatsApp ${ico('flecha')}</a></p>` : `<p class="direccion">${esc(p.ubicacion.texto)}</p>
+        <p><a class="enlace" href="${esc(p.ubicacion.mapsUrl)}" target="_blank" rel="noopener noreferrer" data-maps="${p.ref}">Abrir en Google Maps ${ico('flecha')}</a></p>`}
+        ${conPin(p) || enZona(p) ? `<div class="mapa" data-mapa='${json([punto(p, false)]).replace(/'/g, '&#39;')}'>Cargando mapa…</div>${enZona(p) ? '<p class="nota">El área sombreada indica la zona, no el inmueble.</p>' : p.ubicacion.precision === 'residencial' ? '<p class="nota">El marcador señala el residencial, no la casa.</p>' : ''}` : ''}
       </section>
 
       ${venta?.precio ? `<section class="bloque"><h2>Cuota estimada</h2>${calculadora(venta.precio)}</section>` : ''}

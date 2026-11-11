@@ -17,7 +17,7 @@ npm run dev     # genera y sirve en http://localhost:4174
 | Propiedades (precio, datos, fotos, textos) | `data/propiedades.json` — única fuente |
 | Marca, WhatsApp, correo, Formspree, IDs de analítica | `data/sitio.json` |
 | Plantillas (portada, ficha, contacto), sitemap, datos estructurados | `build.mjs` |
-| Foto de la portada y su encuadre | `data/sitio.json` → `portada` |
+| Fotos de fondo de la portada (orden, encuadre en escritorio y móvil) | `data/sitio.json` → `fondos` |
 | Diseño (colores, espacios, radios y tamaños en variables al inicio) | `src/estilo.css` |
 | Buscador, comparador, galería, formularios, medición | `src/app.js` |
 | Fotos originales | `images/<carpeta>/` (el build crea las versiones WebP) |
@@ -58,6 +58,13 @@ Cada propiedad lleva `ubicacion` en `data/propiedades.json`:
 
 - **Edificio o residencial** (`precision`: `edificio` / `residencial`): `texto`, `mapsUrl` (botón «Ver en Google Maps») y `lat`/`lng` con su `fuente`. Se dibuja como punto azul.
 - **Zona aproximada** (`precision`: `zona`): solo `texto` y `zona` (centro del sector y `radio_m`). Se dibuja como área sombreada punteada, sin pin, sin enlace a mapas y con el botón «Consultar ubicación por WhatsApp». No se publican coordenadas del inmueble ni en el HTML ni en los datos estructurados. Así están los terrenos de Arraiján y Chitré, por decisión del propietario: **no agregar sus coordenadas exactas a este repositorio, que es público.**
+
+## Portada, intro y mapa
+
+- **Fondos**: la secuencia usa las fotos de `images/` listadas en `fondos`. Solo la primera se precarga; las demás se descargan una a una. Cambian por fundido cada 6 s, con controles de anterior, pausa y siguiente. Con «movimiento reducido» la secuencia no avanza sola.
+- **Intro**: pantalla azul con «Panama Listings» y una barra, como la original. Dura poco más de un segundo, se muestra una vez por sesión y se retira por CSS, así que no depende de que carguen las fotos ni del resto del JavaScript.
+- **Encabezado**: transparente sobre la foto de la portada y sólido al bajar; en las páginas interiores es sólido desde el inicio.
+- **Mapa**: MapLibre GL con el estilo «Positron» de [OpenFreeMap](https://openfreemap.org) (datos de OpenStreetMap). No usa clave de API ni tiene costo. La atribución debe permanecer visible.
 
 ## Verificado y pendiente
 

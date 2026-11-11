@@ -10,9 +10,54 @@
     "ga4Id": "",
     "clarityId": ""
   },
-  "portada": {
-    "imagen": "pacifico/bahia.jpg",
-    "encuadre": "50% 62%",
-    "alt": "Vista de la Bahía de Panamá desde Marbella"
-  }
+  "fondos": [
+    {
+      "imagen": "hero-bg.jpg",
+      "encuadre": "50% 55%",
+      "encuadreMovil": "38% 50%",
+      "alt": "Cinta Costera y Avenida Balboa, Ciudad de Panamá"
+    },
+    {
+      "imagen": "bg2.jpg",
+      "encuadre": "50% 50%",
+      "encuadreMovil": "62% 50%",
+      "alt": "Ciudad de Panamá al atardecer"
+    },
+    {
+      "imagen": "bg3.avif",
+      "encuadre": "50% 35%",
+      "encuadreMovil": "55% 35%",
+      "alt": "Campo de golf con vista a las torres de la ciudad"
+    },
+    {
+      "imagen": "bg4.jpg",
+      "encuadre": "50% 45%",
+      "encuadreMovil": "30% 50%",
+      "alt": "Calle del Casco Antiguo"
+    },
+    {
+      "imagen": "bg5.jpg",
+      "encuadre": "50% 60%",
+      "encuadreMovil": "60% 50%",
+      "alt": "Costa del Este"
+    },
+    {
+      "imagen": "bg6.jpg",
+      "encuadre": "50% 45%",
+      "encuadreMovil": "62% 50%",
+      "alt": "Vista aérea de Costa Sur"
+    },
+    {
+      "imagen": "bg7.jpg",
+      "encuadre": "50% 45%",
+      "encuadreMovil": "50% 50%",
+      "alt": "Vista aérea de Costa Sur"
+    },
+    {
+      "imagen": "bg8.jpg",
+      "encuadre": "50% 45%",
+      "encuadreMovil": "62% 50%",
+      "alt": "Vista aérea de Costa Sur"
+    }
+  ]
 }
