@@ -16,14 +16,15 @@ npm run dev     # genera y sirve en http://localhost:4174
 | --- | --- |
 | Propiedades (precio, datos, fotos, textos) | `data/propiedades.json` — única fuente |
 | Marca, WhatsApp, correo, Formspree, IDs de analítica | `data/sitio.json` |
-| Plantillas de portada y ficha, sitemap, datos estructurados | `build.mjs` |
-| Diseño | `src/estilo.css` |
+| Plantillas (portada, ficha, contacto), sitemap, datos estructurados | `build.mjs` |
+| Foto de la portada y su encuadre | `data/sitio.json` → `portada` |
+| Diseño (colores, espacios, radios y tamaños en variables al inicio) | `src/estilo.css` |
 | Buscador, comparador, galería, formularios, medición | `src/app.js` |
 | Fotos originales | `images/<carpeta>/` (el build crea las versiones WebP) |
 
 ### Agregar o editar una propiedad
 
-Edita `data/propiedades.json`. Campos principales: `ref`, `slug` (define la URL `/propiedades/<slug>/`; no cambiarlo una vez publicado), `titulo`, `tipo` (`apartamento`, `casa`, `terreno`), `operaciones` (`venta` o `alquiler` con `precio`; `null` se muestra como «Negociable»), `zona`, `ciudad`, `area_m2`, `recamaras`, `banos`, `parking`, `amoblado`, `extras`, `resumen`, `descripcion`, `portada`, `fotos`, `ubicacion` (`texto`, `mapsUrl` para el botón de Google Maps, y `lat`/`lng`/`precision`/`fuente` solo si el marcador está verificado; con `lat` en `null` la propiedad no aparece en el mapa), `destacada` (la de la portada).
+Edita `data/propiedades.json`. Campos principales: `ref`, `slug` (define la URL `/propiedades/<slug>/`; no cambiarlo una vez publicado), `titulo`, `tipo` (`apartamento`, `casa`, `terreno`), `operaciones` (`venta` o `alquiler` con `precio`; `null` se muestra como «Negociable»), `zona`, `ciudad`, `area_m2`, `recamaras`, `banos`, `parking`, `amoblado`, `extras`, `resumen`, `descripcion`, `portada`, `encuadrePortada` (opcional, p. ej. `"50% 30%"`, para ajustar el recorte 4:3 de la tarjeta), `fotos`, `ubicacion` (`texto`, `mapsUrl` para el botón de Google Maps, y `lat`/`lng`/`precision`/`fuente` solo si el marcador está verificado; con `lat` en `null` la propiedad no aparece en el mapa), `destacada` (la de la portada).
 
 `pendientes` es una lista de dudas por confirmar. No se publica: el build la imprime en consola como recordatorio. Bórrala al resolver cada punto.
 

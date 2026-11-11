@@ -9,5 +9,10 @@
   "analitica": {
     "ga4Id": "",
     "clarityId": ""
+  },
+  "portada": {
+    "imagen": "pacifico/bahia.jpg",
+    "encuadre": "50% 62%",
+    "alt": "Vista de la Bahía de Panamá desde Marbella"
   }
 }

@@ -83,76 +83,189 @@
     if (m) medir('ver_mapa_externo', { item_id: m.dataset.maps });
   });
 
-  /* ---------- Buscador y filtros ---------- */
+  /* ---------- Menú móvil ---------- */
+  var menu = $('#menu');
+  $$('[data-abrir-menu]').forEach(function (b) { b.addEventListener('click', function () { menu.showModal(); }); });
+  if (menu) menu.addEventListener('click', function (e) { if (e.target.closest('a')) menu.close(); });
+
+  /* ---------- Buscador, filtros y vistas del catálogo ---------- */
+  var mapaCatalogo = null;
   var buscador = $('[data-buscador]');
   if (buscador) {
     var tarjetas = $$('[data-tarjeta]');
     var cuenta = $('[data-cuenta]');
     var vacio = $('[data-sin-resultados]');
+    var lista = $('[data-lista]');
+    var panelMapa = $('[data-panel-mapa]');
+    var activos = $('[data-activos]');
+    var selMax = buscador.elements.max;
+    var presupuestos = JSON.parse(selMax.dataset.presupuestos);
+    var vista = 'lista';
     var temporizador;
+    var opActual = function () { return buscador.elements.op.value || 'venta'; };
+    var pintarPresupuestos = function (valor) {
+      var op = opActual();
+      selMax.textContent = '';
+      var o = document.createElement('option'); o.value = ''; o.textContent = 'Sin límite'; selMax.appendChild(o);
+      presupuestos[op].forEach(function (v) {
+        var x = document.createElement('option');
+        x.value = v; x.textContent = 'Hasta ' + dinero(v) + (op === 'alquiler' ? '/mes' : '');
+        selMax.appendChild(x);
+      });
+      selMax.value = presupuestos[op].indexOf(Number(valor)) !== -1 ? String(valor) : '';
+    };
     var leer = function () {
       return {
         q: normal(buscador.elements.q.value.trim()),
         tipo: buscador.elements.tipo.value,
-        op: buscador.elements.op.value,
-        max: parseFloat(buscador.elements.max.value) || 0
+        op: opActual(),
+        max: parseFloat(selMax.value) || 0
       };
+    };
+    var chip = function (texto, quitar) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip';
+      b.setAttribute('aria-label', 'Quitar filtro: ' + texto);
+      b.appendChild(document.createTextNode(texto));
+      var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('class', 'ico'); s.setAttribute('aria-hidden', 'true');
+      var u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', '#i-cerrar'); s.appendChild(u); b.appendChild(s);
+      b.addEventListener('click', function () { quitar(); aplicar(true); });
+      return b;
     };
     var aplicar = function (registrar) {
       var f = leer();
       var n = 0;
+      var visibles = [];
       tarjetas.forEach(function (t) {
-        var ops = t.dataset.ops.split(' ');
-        var ver = true;
+        var ver = t.dataset.ops.split(' ').indexOf(f.op) !== -1;
         if (f.q && t.dataset.texto.indexOf(f.q) === -1) ver = false;
         if (f.tipo && t.dataset.tipo !== f.tipo) ver = false;
-        if (f.op && ops.indexOf(f.op) === -1) ver = false;
         if (f.max) {
-          // El tope se compara con el precio de la operación elegida (venta por defecto).
+          // El tope se compara con el precio de la operación elegida.
           // Las propiedades sin precio publicado no se descartan.
-          var precio = parseFloat(t.dataset[f.op === 'alquiler' ? 'alquiler' : 'venta']);
+          var precio = parseFloat(t.dataset[f.op]);
           if (precio && precio > f.max) ver = false;
         }
         t.hidden = !ver;
-        if (ver) n++;
+        if (ver) { n++; visibles.push(t.dataset.id); }
       });
+      $('[data-cat-titulo]').textContent = f.op === 'alquiler' ? 'Propiedades en alquiler' : 'Propiedades en venta';
       cuenta.textContent = n === 1 ? '1 propiedad' : n + ' propiedades';
       vacio.hidden = n !== 0;
+      lista.hidden = vista !== 'lista' || n === 0;
+      panelMapa.hidden = vista !== 'mapa' || n === 0;
+      if (vista === 'mapa' && n > 0) {
+        if (!mapaCatalogo) mapaCatalogo = crearMapa($('[data-mapa]', panelMapa));
+        mapaCatalogo.filtrar(visibles);
+      }
+      // Filtros activos, cada uno con su botón para quitarlo.
+      activos.textContent = '';
+      if (buscador.elements.q.value.trim()) activos.appendChild(chip('«' + buscador.elements.q.value.trim() + '»', function () { buscador.elements.q.value = ''; }));
+      if (f.tipo) activos.appendChild(chip(buscador.elements.tipo.selectedOptions[0].textContent, function () { buscador.elements.tipo.value = ''; }));
+      if (f.max) activos.appendChild(chip(selMax.selectedOptions[0].textContent, function () { selMax.value = ''; }));
+      if (activos.children.length) {
+        var l = document.createElement('button'); l.type = 'button'; l.className = 'enlace-boton'; l.textContent = 'Limpiar';
+        l.addEventListener('click', limpiar); activos.appendChild(l);
+      }
+      $$('[data-nav-op]').forEach(function (a) { a.setAttribute('aria-current', a.dataset.navOp === f.op ? 'true' : 'false'); });
       var p = new URLSearchParams();
+      if (f.op === 'alquiler') p.set('op', 'alquiler');
       if (buscador.elements.q.value.trim()) p.set('q', buscador.elements.q.value.trim());
       if (f.tipo) p.set('tipo', f.tipo);
-      if (f.op) p.set('op', f.op);
       if (f.max) p.set('max', f.max);
+      if (vista === 'mapa') p.set('vista', 'mapa');
       var s = p.toString();
-      history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash);
+      history.replaceState(null, '', location.pathname + (s ? '?' + s : ''));
       if (registrar) {
         clearTimeout(temporizador);
         temporizador = setTimeout(function () {
-          medir('search', {
-            tipo: f.tipo || 'todos',
-            operacion: f.op || 'todas',
-            precio_max: f.max || 0,
-            con_texto: !!f.q,
-            resultados: n
-          });
+          medir('search', { tipo: f.tipo || 'todos', operacion: f.op, precio_max: f.max || 0, con_texto: !!f.q, vista: vista, resultados: n });
         }, 900);
       }
     };
+    var limpiar = function () {
+      var op = opActual();
+      buscador.reset();
+      buscador.elements.op.value = op;
+      pintarPresupuestos('');
+      aplicar(false);
+    };
+    var ponerOperacion = function (op) {
+      buscador.elements.op.value = op === 'alquiler' ? 'alquiler' : 'venta';
+      pintarPresupuestos('');
+    };
+    var ponerVista = function (v) {
+      vista = v === 'mapa' ? 'mapa' : 'lista';
+      $$('[data-vista]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.vista === vista ? 'true' : 'false'); });
+    };
+
     var inicial = new URLSearchParams(location.search);
-    ['q', 'tipo', 'op', 'max'].forEach(function (k) {
-      if (inicial.get(k) !== null && buscador.elements[k]) buscador.elements[k].value = inicial.get(k);
+    ponerOperacion(inicial.get('op'));
+    if (inicial.get('q')) buscador.elements.q.value = inicial.get('q');
+    if (inicial.get('tipo')) buscador.elements.tipo.value = inicial.get('tipo');
+    pintarPresupuestos(inicial.get('max'));
+    ponerVista(inicial.get('vista'));
+    aplicar(false);
+
+    buscador.addEventListener('change', function (e) {
+      if (e.target.name === 'op') pintarPresupuestos('');
+      aplicar(true);
     });
-    buscador.addEventListener('input', function () { aplicar(true); });
+    buscador.elements.q.addEventListener('input', function () { aplicar(true); });
     buscador.addEventListener('submit', function (e) {
       e.preventDefault();
       aplicar(true);
       $('#propiedades').scrollIntoView();
     });
-    $$('[data-limpiar]').forEach(function (b) {
-      b.addEventListener('click', function () { buscador.reset(); aplicar(false); });
+    $$('[data-limpiar]').forEach(function (b) { b.addEventListener('click', limpiar); });
+    $$('[data-vista]').forEach(function (b) {
+      b.addEventListener('click', function () { ponerVista(b.dataset.vista); aplicar(true); });
     });
-    aplicar(false);
+    var mas = $('[data-mas-filtros]');
+    mas.addEventListener('click', function () {
+      var abierto = $('[data-extra]').classList.toggle('abierto');
+      mas.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    });
+    if (buscador.elements.tipo.value || selMax.value) { $('[data-extra]').classList.add('abierto'); mas.setAttribute('aria-expanded', 'true'); }
+    // «Comprar» y «Alquilar» del menú aplican el filtro sin recargar la portada.
+    $$('[data-nav-op]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        ponerOperacion(a.dataset.navOp);
+        aplicar(true);
+        if (menu && menu.open) menu.close();
+        $('#propiedades').scrollIntoView();
+      });
+    });
+    // Al abrir una ficha se recuerda el catálogo (filtros y posición) para poder volver.
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="/propiedades/"]');
+      if (!a) return;
+      try { sessionStorage.setItem('lp_catalogo', JSON.stringify({ url: location.pathname + location.search, y: window.scrollY })); } catch (err) {}
+    });
+    try {
+      if (sessionStorage.getItem('lp_restaurar') === '1') {
+        sessionStorage.removeItem('lp_restaurar');
+        var guardado = JSON.parse(sessionStorage.getItem('lp_catalogo') || 'null');
+        if (guardado) window.scrollTo({ top: guardado.y, behavior: 'instant' });
+      } else if (location.hash === '#propiedades' || inicial.get('op')) {
+        $('#propiedades').scrollIntoView({ behavior: 'instant' });
+      }
+    } catch (err) {}
   }
+
+  /* ---------- Volver al catálogo desde una ficha ---------- */
+  $$('[data-volver]').forEach(function (a) {
+    try {
+      var g = JSON.parse(sessionStorage.getItem('lp_catalogo') || 'null');
+      if (g && g.url) a.href = g.url;
+      a.addEventListener('click', function () { if (g) sessionStorage.setItem('lp_restaurar', '1'); });
+    } catch (err) {}
+  });
+
+  /* ---------- Contacto: interés preseleccionado ---------- */
+  var interes = new URLSearchParams(location.search).get('interes');
+  if (interes) { var opcion = $('option[data-interes="' + interes.replace(/[^a-z]/g, '') + '"]'); if (opcion) opcion.selected = true; }
 
   /* ---------- Comparador ---------- */
   var barra = $('[data-barra-comparar]');
@@ -235,6 +348,7 @@
       }
     };
     minis.forEach(function (m, k) { m.addEventListener('click', function () { mostrar(k); }); });
+    $$('[data-paso]', galeria).forEach(function (b) { b.addEventListener('click', function () { mostrar(actual + parseInt(b.dataset.paso, 10)); if (minis[actual]) minis[actual].scrollIntoView({ block: 'nearest', inline: 'nearest' }); }); });
     $('[data-abrir-visor]', galeria).addEventListener('click', function () {
       visor.showModal();
       mostrar(actual);
@@ -293,56 +407,78 @@
     calcular();
   });
 
-  /* ---------- Mapa (Leaflet se descarga solo al acercarse al mapa) ---------- */
-  var mapaEl = $('[data-mapa]');
-  if (mapaEl && 'IntersectionObserver' in window) {
-    var cargarMapa = function () {
-      var css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(css);
-      var js = document.createElement('script');
-      js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      js.onload = function () {
-        var L = window.L;
-        var puntos = JSON.parse(mapaEl.dataset.mapa);
-        mapaEl.textContent = '';
-        var mapa = L.map(mapaEl, { scrollWheelZoom: false });
-        // Vista inicial: los círculos de zona necesitan que el mapa ya tenga una antes de añadirse.
-        mapa.setView([puntos[0].lat, puntos[0].lng], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          maxZoom: 18
-        }).addTo(mapa);
-        var marcas = puntos.map(function (p) {
-          // Zona aproximada: área sombreada con borde punteado, sin pin. Edificio: punto sólido.
-          var m = p.radio
-            ? L.featureGroup([
-                L.circle([p.lat, p.lng], { radius: p.radio, color: '#b4572a', weight: 2, dashArray: '6 6', fillColor: '#b4572a', fillOpacity: 0.18 }),
-                // Anillo punteado de tamaño fijo para que la zona se vea también con el mapa alejado.
-                L.circleMarker([p.lat, p.lng], { radius: 14, color: '#b4572a', weight: 2, dashArray: '4 4', fillColor: '#b4572a', fillOpacity: 0.12 })
-              ]).addTo(mapa)
-            : L.circleMarker([p.lat, p.lng], { radius: 10, color: '#ffffff', weight: 3, fillColor: '#0f2c59', fillOpacity: 1 }).addTo(mapa);
-          var caja = document.createElement('div');
-          caja.className = 'popup';
-          var t = document.createElement('strong'); t.textContent = p.titulo; caja.appendChild(t);
-          var d = document.createElement('div'); d.textContent = p.zona + ' · ' + p.precio; caja.appendChild(d);
-          if (p.nota) { var n = document.createElement('div'); n.textContent = p.nota; caja.appendChild(n); }
-          if (p.url) { var a = document.createElement('a'); a.href = p.url; a.textContent = 'Ver ficha →'; caja.appendChild(a); caja.appendChild(document.createTextNode(' · ')); }
-          if (p.wa) { var w = document.createElement('a'); w.href = p.wa; w.target = '_blank'; w.rel = 'noopener noreferrer'; w.dataset.ref = p.ref; w.dataset.lugar = 'mapa'; w.textContent = 'Consultar ubicación por WhatsApp'; caja.appendChild(w); }
-          if (p.maps) { var g = document.createElement('a'); g.href = p.maps; g.target = '_blank'; g.rel = 'noopener noreferrer'; g.textContent = 'Google Maps'; caja.appendChild(g); }
-          m.bindPopup(caja);
-          return m;
-        });
-        if (puntos.length === 1 && !puntos[0].radio) mapa.setView([puntos[0].lat, puntos[0].lng], 15);
-        else mapa.fitBounds(L.featureGroup(marcas).getBounds().pad(0.3));
-      };
-      document.head.appendChild(js);
+  /* ---------- Mapa (Leaflet se descarga solo cuando hace falta) ---------- */
+  var colaLeaflet = null;
+  function conLeaflet(listo) {
+    if (window.L) return listo();
+    if (colaLeaflet) return colaLeaflet.push(listo);
+    colaLeaflet = [listo];
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    var js = document.createElement('script');
+    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    js.onload = function () { colaLeaflet.forEach(function (f) { f(); }); };
+    js.onerror = function () { $$('[data-mapa]').forEach(function (m) { if (!m.firstElementChild) m.textContent = 'No se pudo cargar el mapa.'; }); };
+    document.head.appendChild(js);
+  }
+  function crearMapa(el) {
+    var puntos = JSON.parse(el.dataset.mapa);
+    var mapa = null, capas = {}, pendientes = null;
+    var encuadrar = function (ids) {
+      var grupo = [];
+      puntos.forEach(function (p) {
+        var ver = !ids || !p.id || ids.indexOf(p.id) !== -1;
+        if (ver) { capas[p.id || 0].addTo(mapa); grupo.push(capas[p.id || 0]); } else capas[p.id || 0].remove();
+      });
+      mapa.invalidateSize();
+      if (grupo.length === 1 && !puntos.filter(function (p) { return capas[p.id || 0] === grupo[0]; })[0].radio) mapa.setView(grupo[0].getBounds ? grupo[0].getBounds().getCenter() : grupo[0].getLatLng(), 15);
+      else if (grupo.length) mapa.fitBounds(L.featureGroup(grupo).getBounds().pad(0.25));
     };
-    var obs = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { obs.disconnect(); cargarMapa(); }
-    }, { rootMargin: '300px' });
-    obs.observe(mapaEl);
+    conLeaflet(function () {
+      var L = window.L;
+      el.textContent = '';
+      mapa = L.map(el, { scrollWheelZoom: false });
+      // Vista inicial: los círculos de zona necesitan que el mapa ya tenga una antes de añadirse.
+      mapa.setView([puntos[0].lat, puntos[0].lng], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 18
+      }).addTo(mapa);
+      puntos.forEach(function (p) {
+        // Zona aproximada: área sombreada con borde punteado, sin pin. Edificio: punto sólido.
+        var m = p.radio
+          ? L.featureGroup([
+              L.circle([p.lat, p.lng], { radius: p.radio, color: '#142c3a', weight: 1.5, dashArray: '6 6', fillColor: '#142c3a', fillOpacity: 0.14 }),
+              // Anillo punteado de tamaño fijo para que la zona se vea también con el mapa alejado.
+              L.circleMarker([p.lat, p.lng], { radius: 14, color: '#142c3a', weight: 1.5, dashArray: '4 4', fillColor: '#142c3a', fillOpacity: 0.1 })
+            ])
+          : L.featureGroup([L.circleMarker([p.lat, p.lng], { radius: 9, color: '#ffffff', weight: 3, fillColor: '#142c3a', fillOpacity: 1 })]);
+        var caja = document.createElement('div');
+        caja.className = 'popup';
+        var t = document.createElement('strong'); t.textContent = p.titulo; caja.appendChild(t);
+        var d = document.createElement('div'); d.textContent = p.zona + ' · ' + p.precio; caja.appendChild(d);
+        if (p.nota) { var n = document.createElement('div'); n.textContent = p.nota; caja.appendChild(n); }
+        if (p.url) { var a = document.createElement('a'); a.href = p.url; a.textContent = 'Ver propiedad'; caja.appendChild(a); caja.appendChild(document.createTextNode(' · ')); }
+        if (p.wa) { var w = document.createElement('a'); w.href = p.wa; w.target = '_blank'; w.rel = 'noopener noreferrer'; w.dataset.ref = p.ref; w.dataset.lugar = 'mapa'; w.textContent = 'Consultar ubicación por WhatsApp'; caja.appendChild(w); }
+        if (p.maps) { var g = document.createElement('a'); g.href = p.maps; g.target = '_blank'; g.rel = 'noopener noreferrer'; g.textContent = 'Google Maps'; caja.appendChild(g); }
+        m.bindPopup(caja);
+        capas[p.id || 0] = m;
+      });
+      encuadrar(pendientes);
+    });
+    return { filtrar: function (ids) { if (mapa) encuadrar(ids); else pendientes = ids; } };
+  }
+  // Mapas de las fichas: se cargan al acercarse. El del catálogo, al elegir la vista «Mapa».
+  if ('IntersectionObserver' in window) {
+    $$('[data-mapa]').forEach(function (el) {
+      if (el.closest('[data-panel-mapa]')) return;
+      var obs = new IntersectionObserver(function (es) {
+        if (es[0].isIntersecting) { obs.disconnect(); crearMapa(el); }
+      }, { rootMargin: '300px' });
+      obs.observe(el);
+    });
   }
 
   /* ---------- Formularios (Formspree) ---------- */
