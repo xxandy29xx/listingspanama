@@ -18,7 +18,11 @@
     "banos": 5,
     "parking": 2,
     "amoblado": false,
-    "extras": [],
+    "extras": [
+      "Piscina",
+      "Gimnasio",
+      "Canchas deportivas"
+    ],
     "resumen": "Apartamento de 220 m² con vista a la Bahía de Panamá.",
     "descripcion": "Apartamento sobre la Avenida Balboa con vista a la Bahía de Panamá. 220 m² distribuidos en 4 recámaras y 5 baños, con 2 estacionamientos.",
     "portada": "pacifico/bahia.jpg",
@@ -40,17 +44,14 @@
     "corredor": null,
     "destacada": true,
     "pendientes": [
-      "Precio: tarjeta y flyer dicen $320,000; el mapa de la web anterior decía $350,000.",
-      "Tipo: la ficha anterior decía «Penthouse»; el flyer dice «Apartamento».",
-      "Coordenadas del mapa: no parecen caer sobre la Avenida Balboa.",
-      "La descripción anterior mencionaba piscina, gimnasio y canchas; se retiró hasta confirmarlo."
+      "Reemplazar las coordenadas actuales, que no caen en la zona (el usuario enviará la ubicación)."
     ]
   },
   {
     "id": "coco",
     "ref": "LP-002",
     "slug": "long-beach-coco-del-mar",
-    "titulo": "Coco del Mar — PH Long Beach",
+    "titulo": "PH Long Beach",
     "tipo": "apartamento",
     "operaciones": [
       {
@@ -58,7 +59,7 @@
         "precio": 450000
       }
     ],
-    "zona": "San Francisco",
+    "zona": "Coco del Mar, San Francisco",
     "ciudad": "Ciudad de Panamá",
     "area_m2": 205,
     "recamaras": 3,
@@ -66,8 +67,8 @@
     "parking": 2,
     "amoblado": true,
     "extras": [],
-    "resumen": "Penthouse amoblado de 205 m² en San Francisco.",
-    "descripcion": "Penthouse amoblado en PH Long Beach, Coco del Mar. 205 m², 3 recámaras, 4 baños y 2 estacionamientos.",
+    "resumen": "Penthouse amoblado de 205 m² frente al mar en Coco del Mar.",
+    "descripcion": "Penthouse amoblado frente al mar en PH Long Beach, Coco del Mar. 205 m², 3 recámaras, 4 baños y 2 estacionamientos, con acabados de lujo y vistas espectaculares.",
     "portada": "coco/2.jpg",
     "fotos": [
       "coco/2.jpg",
@@ -81,9 +82,7 @@
     "coordenadas": null,
     "corredor": null,
     "pendientes": [
-      "Título: mezcla barrio (Coco del Mar) y edificio (PH Long Beach); confirmar cómo debe llamarse.",
-      "Sin coordenadas para el mapa.",
-      "La descripción anterior decía «frente al mar» y «acabados de lujo»; se retiró hasta confirmarlo."
+      "Falta la ubicación para el mapa (el usuario la enviará)."
     ]
   },
   {
@@ -137,8 +136,7 @@
     },
     "corredor": null,
     "pendientes": [
-      "Coordenadas del mapa: no parecen caer en El Bosque / Ricardo J. Alfaro.",
-      "Confirmar las características heredadas de la descripción anterior (pisos, A/C, walk-in closet, balcón)."
+      "Reemplazar las coordenadas actuales, que no caen en la zona (el usuario enviará la ubicación)."
     ]
   },
   {
@@ -176,8 +174,7 @@
     "coordenadas": null,
     "corredor": null,
     "pendientes": [
-      "Falta una foto limpia de la fachada (la única está dentro del flyer).",
-      "Sin coordenadas para el mapa."
+      "Falta la ubicación para el mapa (el usuario la enviará)."
     ]
   },
   {
@@ -215,8 +212,7 @@
     "coordenadas": null,
     "corredor": null,
     "pendientes": [
-      "Tipo: la ficha anterior decía «Penthouse»; el flyer dice «Apartamento».",
-      "Sin coordenadas para el mapa."
+      "Falta la ubicación para el mapa (el usuario la enviará)."
     ]
   },
   {
@@ -253,8 +249,7 @@
     "coordenadas": null,
     "corredor": null,
     "pendientes": [
-      "La descripción anterior decía «ultra lujo» y «amenidades de clase mundial»; se retiró hasta tener el detalle real de amenidades.",
-      "Sin coordenadas para el mapa."
+      "Falta la ubicación para el mapa (el usuario la enviará)."
     ]
   },
   {
@@ -278,7 +273,8 @@
     "amoblado": false,
     "extras": [
       "10 hectáreas",
-      "Urbanizable"
+      "Urbanizable",
+      "Fácil acceso"
     ],
     "resumen": "Terreno de 10 hectáreas en Chitré, Herrera.",
     "descripcion": "Terreno de 10 hectáreas (100,000 m²) en Chitré, provincia de Herrera. Precio negociable.",
@@ -292,10 +288,7 @@
       "confirmada": false
     },
     "corredor": null,
-    "pendientes": [
-      "El flyer menciona servicios básicos y fácil acceso; confirmar antes de publicarlo como característica.",
-      "Precio: solo «Negociable»; confirmar si se publica una cifra de referencia."
-    ]
+    "pendientes": []
   },
   {
     "id": "arraijan",
@@ -329,9 +322,7 @@
     "coordenadas": null,
     "corredor": null,
     "pendientes": [
-      "La única imagen es el flyer con texto incrustado; falta una foto limpia.",
-      "Precio: solo «Negociable»; confirmar si se publica una cifra de referencia.",
-      "Sin coordenadas para el mapa."
+      "Falta la ubicación para el mapa (el usuario la enviará)."
     ]
   }
 ]
