@@ -77,6 +77,12 @@
     medir('whatsapp_click', { item_id: a.dataset.ref || '(general)', lugar: a.dataset.lugar || 'otro' });
   });
 
+  /* ---------- Clics en «Ver en Google Maps» ---------- */
+  document.addEventListener('click', function (e) {
+    var m = e.target.closest && e.target.closest('a[data-maps]');
+    if (m) medir('ver_mapa_externo', { item_id: m.dataset.maps });
+  });
+
   /* ---------- Buscador y filtros ---------- */
   var buscador = $('[data-buscador]');
   if (buscador) {
@@ -312,7 +318,9 @@
           caja.className = 'popup';
           var t = document.createElement('strong'); t.textContent = p.titulo; caja.appendChild(t);
           var d = document.createElement('div'); d.textContent = p.zona + ' · ' + p.precio; caja.appendChild(d);
-          if (p.url) { var a = document.createElement('a'); a.href = p.url; a.textContent = 'Ver ficha →'; caja.appendChild(a); }
+          if (p.nota) { var n = document.createElement('div'); n.textContent = p.nota; caja.appendChild(n); }
+          if (p.url) { var a = document.createElement('a'); a.href = p.url; a.textContent = 'Ver ficha →'; caja.appendChild(a); caja.appendChild(document.createTextNode(' · ')); }
+          if (p.maps) { var g = document.createElement('a'); g.href = p.maps; g.target = '_blank'; g.rel = 'noopener noreferrer'; g.textContent = 'Google Maps'; caja.appendChild(g); }
           m.bindPopup(caja);
           return m;
         });

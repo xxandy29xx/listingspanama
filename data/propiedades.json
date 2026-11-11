@@ -36,16 +36,17 @@
       "torre/9.jpg",
       "torre/2.jpg"
     ],
-    "coordenadas": {
-      "lat": 8.9927,
-      "lng": -79.5149,
-      "confirmada": false
+    "ubicacion": {
+      "texto": "Marbella, Ciudad de Panamá",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Torres+del+Pacifico+A+B+Marbella+Panama",
+      "lat": 8.9762487,
+      "lng": -79.5194711,
+      "precision": "edificio",
+      "fuente": "OpenStreetMap, consultado el 2026-11-11: edificio «Torre del Pacifico A», C. Los Jades, Marbella"
     },
     "corredor": null,
     "destacada": true,
-    "pendientes": [
-      "Reemplazar las coordenadas actuales, que no caen en la zona (el usuario enviará la ubicación)."
-    ]
+    "pendientes": []
   },
   {
     "id": "coco",
@@ -79,11 +80,16 @@
       "coco/7.jpg",
       "coco/8.jpg"
     ],
-    "coordenadas": null,
+    "ubicacion": {
+      "texto": "Coco del Mar, San Francisco, Avenida 3 J Sur (Las Amapolas)",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Long+Beach+Coco+del+Mar+Panama",
+      "lat": 8.9971039,
+      "lng": -79.4977201,
+      "precision": "edificio",
+      "fuente": "OpenStreetMap, consultado el 2026-11-11: edificio «P.H. Long Beach», Calle Las Amapolas, Coco del Mar"
+    },
     "corredor": null,
-    "pendientes": [
-      "Falta la ubicación para el mapa (el usuario la enviará)."
-    ]
+    "pendientes": []
   },
   {
     "id": "altavista",
@@ -129,15 +135,16 @@
       "altavista/9.jpg",
       "altavista/10.jpg"
     ],
-    "coordenadas": {
-      "lat": 8.9898,
-      "lng": -79.5201,
-      "confirmada": false
+    "ubicacion": {
+      "texto": "Residencial El Bosque, Calle Las Palmeras, cerca de Ricardo J. Alfaro (Tumba Muerto)",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Altavista+Towers+El+Bosque+Panama",
+      "lat": 9.0339688,
+      "lng": -79.5128373,
+      "precision": "edificio",
+      "fuente": "OpenStreetMap, consultado el 2026-11-11: edificio «Ph Altavista Towers», Calle Las Palmeras, Residencial El Bosque"
     },
     "corredor": null,
-    "pendientes": [
-      "Reemplazar las coordenadas actuales, que no caen en la zona (el usuario enviará la ubicación)."
-    ]
+    "pendientes": []
   },
   {
     "id": "valencia",
@@ -171,11 +178,16 @@
       "valencia/7.jpg",
       "valencia/8.jpg"
     ],
-    "coordenadas": null,
+    "ubicacion": {
+      "texto": "Boulevard Costa Sur, residencial Villa Valencia, Ciudad de Panamá",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Villa+Valencia+Costa+Sur+Panama",
+      "lat": 9.0325123,
+      "lng": -79.4222801,
+      "precision": "residencial",
+      "fuente": "OpenStreetMap, consultado el 2026-11-11: calle interna «Villa Valencia», Villa Valencia Costa Sur (punto del residencial, no de una casa)"
+    },
     "corredor": null,
-    "pendientes": [
-      "Falta la ubicación para el mapa (el usuario la enviará)."
-    ]
+    "pendientes": []
   },
   {
     "id": "waterview",
@@ -209,10 +221,17 @@
       "waterview/7.jpg",
       "waterview/8.jpg"
     ],
-    "coordenadas": null,
+    "ubicacion": {
+      "texto": "Calle 75 Este, Vía Israel, San Francisco, Ciudad de Panamá",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Waterview+Calle+75+Este+Panama",
+      "lat": null,
+      "lng": null,
+      "precision": null,
+      "fuente": null
+    },
     "corredor": null,
     "pendientes": [
-      "Falta la ubicación para el mapa (el usuario la enviará)."
+      "Marcador del mapa pendiente: el edificio no aparece por nombre en OpenStreetMap. Hace falta el pin o las coordenadas."
     ]
   },
   {
@@ -246,11 +265,16 @@
       "zeus/6.jpg",
       "zeus/7.jpg"
     ],
-    "coordenadas": null,
+    "ubicacion": {
+      "texto": "Avenida Paseo del Mar, Costa del Este, Ciudad de Panamá",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Torre+Zeus+Costa+del+Este+Panama",
+      "lat": 9.010425,
+      "lng": -79.4655637,
+      "precision": "edificio",
+      "fuente": "OpenStreetMap, consultado el 2026-11-11: edificio «Torre Zeus», Avenida Paseo del Mar, Costa del Este"
+    },
     "corredor": null,
-    "pendientes": [
-      "Falta la ubicación para el mapa (el usuario la enviará)."
-    ]
+    "pendientes": []
   },
   {
     "id": "chitre",
@@ -282,13 +306,19 @@
     "fotos": [
       "chitre/aerea.jpg"
     ],
-    "coordenadas": {
-      "lat": 7.98994,
-      "lng": -80.41335,
-      "confirmada": false
+    "ubicacion": {
+      "texto": "Chitré, Herrera",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Chitre+Herrera+Panama",
+      "etiquetaEnlace": "Ver la zona en Google Maps",
+      "lat": null,
+      "lng": null,
+      "precision": null,
+      "fuente": null
     },
     "corredor": null,
-    "pendientes": []
+    "pendientes": [
+      "Marcador del mapa retirado: las coordenadas anteriores (7.98994, -80.41335) no tenían fuente y no se pudieron comprobar. Hace falta el pin del terreno."
+    ]
   },
   {
     "id": "arraijan",
@@ -319,10 +349,18 @@
     "fotos": [
       "arraijan/1.jpg"
     ],
-    "coordenadas": null,
+    "ubicacion": {
+      "texto": "Cerro Silvestre, Arraiján — junto al residencial La Isabella. Ubicación aproximada",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=La+Isabella+Cerro+Silvestre+Arraijan+Panama",
+      "etiquetaEnlace": "Ver la zona de referencia en Google Maps",
+      "lat": null,
+      "lng": null,
+      "precision": null,
+      "fuente": null
+    },
     "corredor": null,
     "pendientes": [
-      "Falta la ubicación para el mapa (el usuario la enviará)."
+      "Marcador del mapa pendiente hasta recibir el pin exacto del propietario. El enlace de Google Maps apunta al residencial La Isabella, que es solo la referencia."
     ]
   }
 ]

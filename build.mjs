@@ -36,6 +36,9 @@ const precioOp = (o) => (o.precio == null ? 'Negociable' : o.tipo === 'alquiler'
 const precioTexto = (p) => p.operaciones.map(precioOp).join(' · ');
 const chipTexto = (p) => (p.operaciones.length > 1 ? 'Venta o alquiler' : OPS[p.operaciones[0].tipo]);
 const rutaDe = (p) => `/propiedades/${p.slug}/`;
+const conPin = (p) => p.ubicacion.lat != null && p.ubicacion.lng != null;
+const PRECISION = { edificio: 'Ubicación del edificio', residencial: 'Ubicación del residencial (no de la casa)' };
+const enlaceMaps = (p, clase = '') => `<a${clase ? ` class="${clase}"` : ''} href="${esc(p.ubicacion.mapsUrl)}" target="_blank" rel="noopener noreferrer" data-maps="${p.ref}">${esc(p.ubicacion.etiquetaEnlace ?? 'Ver en Google Maps')}</a>`;
 function datosDe(p) {
   const d = [];
   if (p.area_m2) d.push([numero(p.area_m2), 'm²']);
@@ -228,7 +231,7 @@ function tarjeta(p, { comparar = true } = {}) {
   <div class="cuerpo">
     <div class="precio">${venta ? precioOp(venta) : precioOp(alquiler)}${venta && alquiler ? ` <small>· ${precioOp(alquiler)}</small>` : ''}</div>
     <h3><a href="${rutaDe(p)}">${esc(p.titulo)}</a></h3>
-    <p class="zona">${esc(p.zona)}</p>
+    <p class="zona">${esc(p.zona)} · ${enlaceMaps(p)}</p>
     ${datosDe(p).length ? `<ul class="datos">${datosDe(p).map(([v, u]) => `<li>${v}${u ? ` <span>${u}</span>` : ''}</li>`).join('')}</ul>` : ''}
   </div>
   <div class="acciones">
@@ -283,9 +286,11 @@ function formulario({ lugar, titulo, p }) {
 }
 
 /* ---------- portada ---------- */
-const puntosMapa = propiedades.filter((p) => p.coordenadas).map((p) => ({
-  lat: p.coordenadas.lat, lng: p.coordenadas.lng, titulo: p.titulo, zona: p.zona, precio: precioTexto(p), url: rutaDe(p),
-}));
+const punto = (p, conFicha) => ({
+  lat: p.ubicacion.lat, lng: p.ubicacion.lng, titulo: p.titulo, zona: p.zona, precio: precioTexto(p),
+  nota: PRECISION[p.ubicacion.precision], maps: p.ubicacion.mapsUrl, ...(conFicha ? { url: rutaDe(p) } : {}),
+});
+const puntosMapa = propiedades.filter(conPin).map((p) => punto(p, true));
 const datosCliente = propiedades.map((p) => ({
   id: p.id, titulo: p.titulo, url: rutaDe(p), zona: p.zona, precio: precioTexto(p),
   tipoTexto: TIPOS[p.tipo], opsTexto: p.operaciones.map((o) => OPS[o.tipo]).join(' / '),
@@ -369,7 +374,7 @@ ${puntosMapa.length ? `<section class="seccion pegada" id="mapa">
   <div class="contenedor">
     <div class="seccion-titulo"><div><span class="etiqueta">Ubicaciones</span><h2>Mapa de propiedades</h2></div></div>
     <div class="mapa" data-mapa="${esc(JSON.stringify(puntosMapa))}">Cargando mapa…</div>
-    <p class="nota">Ubicaciones aproximadas. El mapa muestra solo las propiedades con ubicación registrada (${puntosMapa.length} de ${propiedades.length}).</p>
+    <p class="nota">Cada marcador señala el edificio o el residencial, no la unidad. El mapa muestra las propiedades con ubicación verificada (${puntosMapa.length} de ${propiedades.length}); las demás tienen su enlace a Google Maps en la ficha.</p>
   </div>
 </section>` : ''}
 
@@ -452,6 +457,7 @@ for (const p of propiedades) {
         '@type': tipoSchema,
         name: p.titulo,
         address: { '@type': 'PostalAddress', streetAddress: p.zona, addressLocality: p.ciudad, addressCountry: 'PA' },
+        ...(conPin(p) ? { geo: { '@type': 'GeoCoordinates', latitude: p.ubicacion.lat, longitude: p.ubicacion.lng } } : {}),
         ...(p.area_m2 ? { floorSize: { '@type': 'QuantitativeValue', value: p.area_m2, unitCode: 'MTK' } } : {}),
         ...(p.recamaras ? { numberOfBedrooms: p.recamaras } : {}),
         ...(p.banos ? { numberOfBathroomsTotal: p.banos } : {}),
@@ -474,7 +480,6 @@ for (const p of propiedades) {
     },
     organizacion,
   ];
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${p.zona}, ${p.ciudad}, Panamá`)}`;
 
   const html = `${cabeza({ titulo: `${p.titulo} — ${tituloTipo} en ${p.zona} | ${sitio.nombre}`, descripcion, ruta, og: p._og, tipoOg: 'article', ld })}
 <body class="con-barra">
@@ -509,8 +514,9 @@ ${cabecera(false)}
 
       <section class="bloque">
         <h2>Ubicación</h2>
-        <p>${esc(p.zona)}, ${esc(p.ciudad)}. <a href="${mapsUrl}" target="_blank" rel="noopener">Ver la zona en Google Maps</a></p>
-        ${p.coordenadas ? `<div class="mapa" data-mapa="${esc(JSON.stringify([{ lat: p.coordenadas.lat, lng: p.coordenadas.lng, titulo: p.titulo, zona: p.zona, precio: precioTexto(p) }]))}">Cargando mapa…</div><p class="nota">Ubicación aproximada.</p>` : ''}
+        <p>${esc(p.ubicacion.texto)}</p>
+        <p>${enlaceMaps(p, 'boton claro chico')}</p>
+        ${conPin(p) ? `<div class="mapa" data-mapa="${esc(JSON.stringify([punto(p, false)]))}">Cargando mapa…</div><p class="nota">${PRECISION[p.ubicacion.precision]}.</p>` : ''}
       </section>
 
       ${venta?.precio ? `<section class="bloque"><h2>Cuota estimada</h2>${calculadora(venta.precio)}</section>` : ''}

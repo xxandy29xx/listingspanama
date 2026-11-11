@@ -85,6 +85,7 @@ figure, dl, dd { margin: 0; }
 .tarjeta h3 a { text-decoration: none; }
 .tarjeta h3 a:hover { text-decoration: underline; }
 .zona { color: var(--gris); font-size: 14px; margin: 0; }
+.zona a { color: var(--azul); font-weight: 600; white-space: nowrap; }
 .datos { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 8px 0 0; padding: 12px 0 0; border-top: 1px solid var(--linea); list-style: none; font-size: 14px; font-weight: 600; }
 .datos span { color: var(--gris); font-weight: 500; }
 .tarjeta .acciones { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 0 16px 12px; margin-top: auto; }

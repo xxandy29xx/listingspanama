@@ -23,7 +23,7 @@ npm run dev     # genera y sirve en http://localhost:4174
 
 ### Agregar o editar una propiedad
 
-Edita `data/propiedades.json`. Campos principales: `ref`, `slug` (define la URL `/propiedades/<slug>/`; no cambiarlo una vez publicado), `titulo`, `tipo` (`apartamento`, `casa`, `terreno`), `operaciones` (`venta` o `alquiler` con `precio`; `null` se muestra como «Negociable»), `zona`, `ciudad`, `area_m2`, `recamaras`, `banos`, `parking`, `amoblado`, `extras`, `resumen`, `descripcion`, `portada`, `fotos`, `coordenadas`, `destacada` (la de la portada).
+Edita `data/propiedades.json`. Campos principales: `ref`, `slug` (define la URL `/propiedades/<slug>/`; no cambiarlo una vez publicado), `titulo`, `tipo` (`apartamento`, `casa`, `terreno`), `operaciones` (`venta` o `alquiler` con `precio`; `null` se muestra como «Negociable»), `zona`, `ciudad`, `area_m2`, `recamaras`, `banos`, `parking`, `amoblado`, `extras`, `resumen`, `descripcion`, `portada`, `fotos`, `ubicacion` (`texto`, `mapsUrl` para el botón de Google Maps, y `lat`/`lng`/`precision`/`fuente` solo si el marcador está verificado; con `lat` en `null` la propiedad no aparece en el mapa), `destacada` (la de la portada).
 
 `pendientes` es una lista de dudas por confirmar. No se publica: el build la imprime en consola como recordatorio. Bórrala al resolver cada punto.
 
