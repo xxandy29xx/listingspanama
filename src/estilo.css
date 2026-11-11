@@ -122,6 +122,9 @@ dialog::backdrop { background: rgba(10,18,33,0.72); }
 /* Mapa */
 .mapa { height: 340px; border-radius: 12px; border: 1px solid var(--linea); background: var(--azul-suave); display: grid; place-items: center; color: var(--gris); font-size: 14px; overflow: hidden; z-index: 0; position: relative; }
 .nota { color: var(--gris); font-size: 13px; margin: 10px 0 0; }
+.leyenda { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; margin-right: 2px; }
+.leyenda.pin { background: var(--azul); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--azul); }
+.leyenda.zona { background: rgba(180,87,42,0.25); border: 2px dashed #b4572a; }
 .popup strong { font: 500 16px/1.2 var(--serif); display: block; margin-bottom: 2px; }
 .popup a { color: var(--azul); font-weight: 700; }
 

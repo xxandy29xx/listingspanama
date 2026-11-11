@@ -2,7 +2,7 @@
   {
     "id": "torre",
     "ref": "LP-003",
-    "slug": "pacifico-avenida-balboa",
+    "slug": "torres-del-pacifico-marbella",
     "titulo": "PH Torres del Pacífico A",
     "tipo": "apartamento",
     "operaciones": [
@@ -11,7 +11,7 @@
         "precio": 320000
       }
     ],
-    "zona": "Avenida Balboa, Marbella",
+    "zona": "Marbella, Ciudad de Panamá",
     "ciudad": "Ciudad de Panamá",
     "area_m2": 220,
     "recamaras": 4,
@@ -24,7 +24,7 @@
       "Canchas deportivas"
     ],
     "resumen": "Apartamento de 220 m² con vista a la Bahía de Panamá.",
-    "descripcion": "Apartamento sobre la Avenida Balboa con vista a la Bahía de Panamá. 220 m² distribuidos en 4 recámaras y 5 baños, con 2 estacionamientos.",
+    "descripcion": "Apartamento en Marbella con vista a la Bahía de Panamá. 220 m² distribuidos en 4 recámaras y 5 baños, con 2 estacionamientos.",
     "portada": "pacifico/bahia.jpg",
     "fotos": [
       "torre/5.jpg",
@@ -37,7 +37,7 @@
       "torre/2.jpg"
     ],
     "ubicacion": {
-      "texto": "Marbella, Ciudad de Panamá",
+      "texto": "Calle Los Jades, Marbella",
       "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Torres+del+Pacifico+A+B+Marbella+Panama",
       "lat": 8.9762487,
       "lng": -79.5194711,
@@ -223,16 +223,14 @@
     ],
     "ubicacion": {
       "texto": "Calle 75 Este, Vía Israel, San Francisco, Ciudad de Panamá",
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Waterview+Calle+75+Este+Panama",
-      "lat": null,
-      "lng": null,
-      "precision": null,
-      "fuente": null
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=PH+Waterview+Panama&query_place_id=ChIJ_a8DaQ-prI8RyxZJPIdICIc",
+      "lat": 8.9880125,
+      "lng": -79.5032344,
+      "precision": "edificio",
+      "fuente": "Código plus XFQW+6P2 (Panamá) suministrado por el usuario, decodificado el 2026-11-11; cae sobre la Calle 75 Este (Ramón Real Madrid), San Francisco, junto a ELMEC de Vía Israel según OpenStreetMap. El edificio no figura por nombre en OpenStreetMap."
     },
     "corredor": null,
-    "pendientes": [
-      "Marcador del mapa pendiente: el edificio no aparece por nombre en OpenStreetMap. Hace falta el pin o las coordenadas."
-    ]
+    "pendientes": []
   },
   {
     "id": "zeus",
@@ -308,17 +306,19 @@
     ],
     "ubicacion": {
       "texto": "Chitré, Herrera",
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Chitre+Herrera+Panama",
-      "etiquetaEnlace": "Ver la zona en Google Maps",
+      "mapsUrl": null,
       "lat": null,
       "lng": null,
-      "precision": null,
-      "fuente": null
+      "precision": "zona",
+      "zona": {
+        "lat": 7.963,
+        "lng": -80.428,
+        "radio_m": 3000
+      },
+      "fuente": "Centro de la ciudad de Chitré en OpenStreetMap (2026-11-11), redondeado. Es una referencia de la zona, no la ubicación del terreno. Decisión del usuario: no publicar la ubicación exacta."
     },
     "corredor": null,
-    "pendientes": [
-      "Marcador del mapa retirado: las coordenadas anteriores (7.98994, -80.41335) no tenían fuente y no se pudieron comprobar. Hace falta el pin del terreno."
-    ]
+    "pendientes": []
   },
   {
     "id": "arraijan",
@@ -350,17 +350,22 @@
       "arraijan/1.jpg"
     ],
     "ubicacion": {
-      "texto": "Cerro Silvestre, Arraiján — junto al residencial La Isabella. Ubicación aproximada",
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=La+Isabella+Cerro+Silvestre+Arraijan+Panama",
-      "etiquetaEnlace": "Ver la zona de referencia en Google Maps",
+      "texto": "Cerro Silvestre, Arraiján",
+      "mapsUrl": null,
       "lat": null,
       "lng": null,
-      "precision": null,
-      "fuente": null
+      "precision": "zona",
+      "zona": {
+        "lat": 8.939,
+        "lng": -79.681,
+        "radio_m": 1500
+      },
+      "fuente": "Centro del poblado Cerro Silvestre en OpenStreetMap (2026-11-11), redondeado. Es una referencia del sector, no la ubicación del terreno. Decisión del usuario: no publicar la ubicación exacta."
     },
     "corredor": null,
     "pendientes": [
-      "Marcador del mapa pendiente hasta recibir el pin exacto del propietario. El enlace de Google Maps apunta al residencial La Isabella, que es solo la referencia."
+      "La única foto es el flyer, que muestra el contorno de la parcela sobre una vista satelital y la estación de Metro Cáceres: contradice la decisión de no publicar la ubicación exacta. No se cambió porque las fotos no debían tocarse.",
+      "La característica «A 100 m de la estación de Metro Cáceres» también acota la ubicación. Se conservó porque las características no debían tocarse."
     ]
   }
 ]

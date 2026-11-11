@@ -13,8 +13,17 @@ const sitio = JSON.parse(await readFile(path.join(raiz, 'data/sitio.json'), 'utf
 const propiedades = JSON.parse(await readFile(path.join(raiz, 'data/propiedades.json'), 'utf8'));
 
 // Los IDs de analítica pueden venir de variables de entorno (Vercel) o de data/sitio.json.
-const ga4 = process.env.GA4_ID || sitio.analitica.ga4Id || '';
-const clarity = process.env.CLARITY_ID || sitio.analitica.clarityId || '';
+// Un ID vacío o con formato inválido no se usa: no se carga ningún script.
+const avisos = [];
+function idValido(nombre, valor, patron) {
+  const v = String(valor || '').trim();
+  if (!v) return '';
+  if (patron.test(v)) return v;
+  avisos.push(`${nombre}: «${v}» no tiene el formato esperado; no se cargará.`);
+  return '';
+}
+const ga4 = idValido('GA4', process.env.GA4_ID || sitio.analitica.ga4Id, /^G-[A-Z0-9]{6,}$/);
+const clarity = idValido('Clarity', process.env.CLARITY_ID || sitio.analitica.clarityId, /^[a-z0-9]{8,14}$/);
 
 /* ---------- utilidades ---------- */
 const esc = (t) => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -36,9 +45,12 @@ const precioOp = (o) => (o.precio == null ? 'Negociable' : o.tipo === 'alquiler'
 const precioTexto = (p) => p.operaciones.map(precioOp).join(' · ');
 const chipTexto = (p) => (p.operaciones.length > 1 ? 'Venta o alquiler' : OPS[p.operaciones[0].tipo]);
 const rutaDe = (p) => `/propiedades/${p.slug}/`;
-const conPin = (p) => p.ubicacion.lat != null && p.ubicacion.lng != null;
+const conPin = (p) => p.ubicacion.precision !== 'zona' && p.ubicacion.lat != null && p.ubicacion.lng != null;
+const enZona = (p) => p.ubicacion.precision === 'zona' && p.ubicacion.zona;
+// «Marbella, Ciudad de Panamá» ya incluye la ciudad: no se repite.
+const lugar = (p) => (p.zona.includes(p.ciudad) ? p.zona : `${p.zona} · ${p.ciudad}`);
 const PRECISION = { edificio: 'Ubicación del edificio', residencial: 'Ubicación del residencial (no de la casa)' };
-const enlaceMaps = (p, clase = '') => `<a${clase ? ` class="${clase}"` : ''} href="${esc(p.ubicacion.mapsUrl)}" target="_blank" rel="noopener noreferrer" data-maps="${p.ref}">${esc(p.ubicacion.etiquetaEnlace ?? 'Ver en Google Maps')}</a>`;
+const enlaceMaps = (p, clase = '') => `<a${clase ? ` class="${clase}"` : ''} href="${esc(p.ubicacion.mapsUrl)}" target="_blank" rel="noopener noreferrer" data-maps="${p.ref}">Ver en Google Maps</a>`;
 function datosDe(p) {
   const d = [];
   if (p.area_m2) d.push([numero(p.area_m2), 'm²']);
@@ -53,6 +65,8 @@ function datosDe(p) {
 const wa = (texto) => `https://wa.me/${sitio.whatsapp}?text=${encodeURIComponent(texto)}`;
 const waGeneral = wa(`Hola, vi ${sitio.nombre} y quisiera información.`);
 const waPropiedad = (p) => wa(`Hola, me interesa ${p.titulo} (${p.zona}), ref. ${p.ref}. ${abs(rutaDe(p))}`);
+const waUbicacion = (p) => wa(`Hola, quisiera consultar la ubicación de ${p.titulo} (${p.zona}), ref. ${p.ref}. ${abs(rutaDe(p))}`);
+const enlaceUbicacionWa = (p, clase) => `<a class="${clase}" href="${waUbicacion(p)}" target="_blank" rel="noopener noreferrer" data-ref="${p.ref}" data-lugar="ubicacion">${iconoWa}Consultar ubicación por WhatsApp</a>`;
 const iconoWa = '<svg class="icono-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.4-.2-2.6.7.7-2.5-.3-.4A8 8 0 0 1 12 4z"/></svg>';
 
 /* ---------- imágenes ---------- */
@@ -231,7 +245,7 @@ function tarjeta(p, { comparar = true } = {}) {
   <div class="cuerpo">
     <div class="precio">${venta ? precioOp(venta) : precioOp(alquiler)}${venta && alquiler ? ` <small>· ${precioOp(alquiler)}</small>` : ''}</div>
     <h3><a href="${rutaDe(p)}">${esc(p.titulo)}</a></h3>
-    <p class="zona">${esc(p.zona)} · ${enlaceMaps(p)}</p>
+    <p class="zona">${esc(p.zona)} · ${enZona(p) ? 'Ubicación aproximada' : enlaceMaps(p)}</p>
     ${datosDe(p).length ? `<ul class="datos">${datosDe(p).map(([v, u]) => `<li>${v}${u ? ` <span>${u}</span>` : ''}</li>`).join('')}</ul>` : ''}
   </div>
   <div class="acciones">
@@ -287,10 +301,16 @@ function formulario({ lugar, titulo, p }) {
 
 /* ---------- portada ---------- */
 const punto = (p, conFicha) => ({
-  lat: p.ubicacion.lat, lng: p.ubicacion.lng, titulo: p.titulo, zona: p.zona, precio: precioTexto(p),
-  nota: PRECISION[p.ubicacion.precision], maps: p.ubicacion.mapsUrl, ...(conFicha ? { url: rutaDe(p) } : {}),
+  titulo: p.titulo, zona: p.zona, precio: precioTexto(p), ...(conFicha ? { url: rutaDe(p) } : {}),
+  ...(enZona(p)
+    // Zona aproximada: solo el centro del sector y un radio. Nunca la coordenada del inmueble.
+    ? { lat: p.ubicacion.zona.lat, lng: p.ubicacion.zona.lng, radio: p.ubicacion.zona.radio_m, nota: 'Ubicación aproximada', wa: waUbicacion(p), ref: p.ref }
+    : { lat: p.ubicacion.lat, lng: p.ubicacion.lng, nota: PRECISION[p.ubicacion.precision], maps: p.ubicacion.mapsUrl }),
 });
-const puntosMapa = propiedades.filter(conPin).map((p) => punto(p, true));
+const enMapa = propiedades.filter((p) => conPin(p) || enZona(p));
+const puntosMapa = enMapa.map((p) => punto(p, true));
+const nPines = propiedades.filter(conPin).length;
+const nZonas = propiedades.filter(enZona).length;
 const datosCliente = propiedades.map((p) => ({
   id: p.id, titulo: p.titulo, url: rutaDe(p), zona: p.zona, precio: precioTexto(p),
   tipoTexto: TIPOS[p.tipo], opsTexto: p.operaciones.map((o) => OPS[o.tipo]).join(' / '),
@@ -374,7 +394,7 @@ ${puntosMapa.length ? `<section class="seccion pegada" id="mapa">
   <div class="contenedor">
     <div class="seccion-titulo"><div><span class="etiqueta">Ubicaciones</span><h2>Mapa de propiedades</h2></div></div>
     <div class="mapa" data-mapa="${esc(JSON.stringify(puntosMapa))}">Cargando mapa…</div>
-    <p class="nota">Cada marcador señala el edificio o el residencial, no la unidad. El mapa muestra las propiedades con ubicación verificada (${puntosMapa.length} de ${propiedades.length}); las demás tienen su enlace a Google Maps en la ficha.</p>
+    <p class="nota"><span class="leyenda pin"></span> Edificio o residencial (${nPines}) · <span class="leyenda zona"></span> Ubicación aproximada: indica solo la zona, no el inmueble (${nZonas}).</p>
   </div>
 </section>` : ''}
 
@@ -456,7 +476,7 @@ for (const p of propiedades) {
       about: {
         '@type': tipoSchema,
         name: p.titulo,
-        address: { '@type': 'PostalAddress', streetAddress: p.zona, addressLocality: p.ciudad, addressCountry: 'PA' },
+        address: { '@type': 'PostalAddress', ...(enZona(p) ? {} : { streetAddress: p.ubicacion.texto }), addressLocality: p.ciudad, addressCountry: 'PA' },
         ...(conPin(p) ? { geo: { '@type': 'GeoCoordinates', latitude: p.ubicacion.lat, longitude: p.ubicacion.lng } } : {}),
         ...(p.area_m2 ? { floorSize: { '@type': 'QuantitativeValue', value: p.area_m2, unitCode: 'MTK' } } : {}),
         ...(p.recamaras ? { numberOfBedrooms: p.recamaras } : {}),
@@ -499,7 +519,7 @@ ${cabecera(false)}
       <div class="ficha-cabeza">
         <span class="etiqueta">${tituloTipo}</span>
         <h1>${esc(p.titulo)}</h1>
-        <p class="zona">${esc(p.zona)} · ${esc(p.ciudad)}</p>
+        <p class="zona">${esc(lugar(p))}</p>
         <div class="precios">${p.operaciones.map((o) => `<div><span>${o.tipo === 'alquiler' ? 'Alquiler mensual' : 'Precio de venta'}</span><div class="precio">${precioOp(o)}</div></div>`).join('')}</div>
         <div class="ref"><span>REF. ${p.ref}</span><button type="button" class="enlace-boton" data-compartir data-url="${abs(ruta)}">Compartir</button></div>
       </div>
@@ -514,9 +534,11 @@ ${cabecera(false)}
 
       <section class="bloque">
         <h2>Ubicación</h2>
-        <p>${esc(p.ubicacion.texto)}</p>
-        <p>${enlaceMaps(p, 'boton claro chico')}</p>
-        ${conPin(p) ? `<div class="mapa" data-mapa="${esc(JSON.stringify([punto(p, false)]))}">Cargando mapa…</div><p class="nota">${PRECISION[p.ubicacion.precision]}.</p>` : ''}
+        ${enZona(p) ? `<p><strong>${esc(p.ubicacion.texto)}</strong> · Ubicación aproximada</p>
+        <p>El mapa muestra solo la zona. La ubicación del inmueble se comparte al consultar.</p>
+        <p>${enlaceUbicacionWa(p, 'boton wa chico')}</p>` : `<p>${esc(p.ubicacion.texto)}</p>
+        <p>${enlaceMaps(p, 'boton claro chico')}</p>`}
+        ${conPin(p) || enZona(p) ? `<div class="mapa" data-mapa="${esc(JSON.stringify([punto(p, false)]))}">Cargando mapa…</div><p class="nota">${enZona(p) ? 'Ubicación aproximada: el área sombreada indica la zona, no el inmueble.' : PRECISION[p.ubicacion.precision] + '.'}</p>` : ''}
       </section>
 
       ${venta?.precio ? `<section class="bloque"><h2>Cuota estimada</h2>${calculadora(venta.precio)}</section>` : ''}
@@ -586,7 +608,8 @@ await escribir('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${abs('/sitema
 
 /* ---------- resumen ---------- */
 console.log(`Sitio generado en dist/: 1 portada, ${propiedades.length} fichas, sitemap y robots. Imágenes nuevas: ${generadas}.`);
-console.log(`Analítica: GA4 ${ga4 ? ga4 : 'sin configurar'} · Clarity ${clarity ? clarity : 'sin configurar'}.`);
+console.log(`Analítica: GA4 ${ga4 ? ga4 : 'sin configurar (no se carga)'} · Clarity ${clarity ? clarity : 'sin configurar (no se carga)'}.`);
+for (const a of avisos) console.warn(`AVISO — ${a}`);
 const conPendientes = propiedades.filter((p) => p.pendientes?.length);
 if (conPendientes.length) {
   console.log(`\nDatos por confirmar (${conPendientes.reduce((n, p) => n + p.pendientes.length, 0)}):`);

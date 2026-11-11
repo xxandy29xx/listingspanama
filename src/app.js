@@ -308,23 +308,33 @@
         var puntos = JSON.parse(mapaEl.dataset.mapa);
         mapaEl.textContent = '';
         var mapa = L.map(mapaEl, { scrollWheelZoom: false });
+        // Vista inicial: los círculos de zona necesitan que el mapa ya tenga una antes de añadirse.
+        mapa.setView([puntos[0].lat, puntos[0].lng], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
           maxZoom: 18
         }).addTo(mapa);
         var marcas = puntos.map(function (p) {
-          var m = L.circleMarker([p.lat, p.lng], { radius: 10, color: '#ffffff', weight: 3, fillColor: '#0f2c59', fillOpacity: 1 }).addTo(mapa);
+          // Zona aproximada: área sombreada con borde punteado, sin pin. Edificio: punto sólido.
+          var m = p.radio
+            ? L.featureGroup([
+                L.circle([p.lat, p.lng], { radius: p.radio, color: '#b4572a', weight: 2, dashArray: '6 6', fillColor: '#b4572a', fillOpacity: 0.18 }),
+                // Anillo punteado de tamaño fijo para que la zona se vea también con el mapa alejado.
+                L.circleMarker([p.lat, p.lng], { radius: 14, color: '#b4572a', weight: 2, dashArray: '4 4', fillColor: '#b4572a', fillOpacity: 0.12 })
+              ]).addTo(mapa)
+            : L.circleMarker([p.lat, p.lng], { radius: 10, color: '#ffffff', weight: 3, fillColor: '#0f2c59', fillOpacity: 1 }).addTo(mapa);
           var caja = document.createElement('div');
           caja.className = 'popup';
           var t = document.createElement('strong'); t.textContent = p.titulo; caja.appendChild(t);
           var d = document.createElement('div'); d.textContent = p.zona + ' · ' + p.precio; caja.appendChild(d);
           if (p.nota) { var n = document.createElement('div'); n.textContent = p.nota; caja.appendChild(n); }
           if (p.url) { var a = document.createElement('a'); a.href = p.url; a.textContent = 'Ver ficha →'; caja.appendChild(a); caja.appendChild(document.createTextNode(' · ')); }
+          if (p.wa) { var w = document.createElement('a'); w.href = p.wa; w.target = '_blank'; w.rel = 'noopener noreferrer'; w.dataset.ref = p.ref; w.dataset.lugar = 'mapa'; w.textContent = 'Consultar ubicación por WhatsApp'; caja.appendChild(w); }
           if (p.maps) { var g = document.createElement('a'); g.href = p.maps; g.target = '_blank'; g.rel = 'noopener noreferrer'; g.textContent = 'Google Maps'; caja.appendChild(g); }
           m.bindPopup(caja);
           return m;
         });
-        if (puntos.length === 1) mapa.setView([puntos[0].lat, puntos[0].lng], 15);
+        if (puntos.length === 1 && !puntos[0].radio) mapa.setView([puntos[0].lat, puntos[0].lng], 15);
         else mapa.fitBounds(L.featureGroup(marcas).getBounds().pad(0.3));
       };
       document.head.appendChild(js);
@@ -339,9 +349,14 @@
   $$('[data-formulario]').forEach(function (f) {
     var estado = $('[data-estado]', f);
     var boton = $('button[type="submit"]', f);
+    var enviando = false;
+    var ultimo = '';
+    var avisar = function (clase, texto) { estado.hidden = false; estado.className = 'estado ' + clase; estado.textContent = texto; };
     f.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (enviando) return; // evita envíos duplicados por doble clic o Enter repetido
       var d = new FormData(f);
+      if (!String(d.get('nombre') || '').trim()) { avisar('error', 'Escribe tu nombre.'); return; }
       if (!String(d.get('telefono') || '').trim() && !String(d.get('email') || '').trim()) {
         estado.hidden = false; estado.className = 'estado error';
         estado.textContent = 'Déjanos un teléfono o un correo para poder responderte.';
@@ -351,14 +366,26 @@
       d.forEach(function (v, k) { cuerpo[k] = v; });
       cuerpo.pagina = location.origin + location.pathname;
       Object.keys(origen).forEach(function (k) { cuerpo[k] = origen[k]; });
+      var firma = JSON.stringify(cuerpo);
+      if (firma === ultimo) { avisar('ok', 'Esa consulta ya fue enviada. Te contactaremos pronto.'); return; }
       var texto = boton.textContent;
+      enviando = true;
       boton.disabled = true; boton.textContent = 'Enviando…';
+      estado.hidden = true;
+      var control = 'AbortController' in window ? new AbortController() : null;
+      var limite = setTimeout(function () { if (control) control.abort(); }, 20000);
       fetch(f.action, {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify(cuerpo)
+        body: firma,
+        signal: control ? control.signal : undefined
       }).then(function (r) {
-        if (!r.ok) throw new Error('respuesta ' + r.status);
+        // Éxito solo si Formspree responde 2xx y no marca error en el cuerpo.
+        return r.json().catch(function () { return {}; }).then(function (resp) {
+          if (!r.ok || resp.ok === false || resp.error || (resp.errors && resp.errors.length)) throw new Error('respuesta ' + r.status);
+        });
+      }).then(function () {
+        ultimo = firma;
         f.reset();
         estado.hidden = false; estado.className = 'estado ok';
         estado.textContent = 'Consulta enviada. Te contactaremos pronto.';
@@ -368,6 +395,8 @@
         estado.hidden = false; estado.className = 'estado error';
         estado.textContent = 'No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.';
       }).then(function () {
+        clearTimeout(limite);
+        enviando = false;
         boton.disabled = false; boton.textContent = texto;
       });
     });

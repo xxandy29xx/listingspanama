@@ -51,14 +51,22 @@ Envían a Formspree (`formspreeId` en `data/sitio.json`) con: nombre, teléfono,
 
 `vercel.json` indica a Vercel que ejecute `npm run build` y sirva `dist/`. La web publicada antes del rediseño está en el tag `respaldo-web-2026-11-11`; el `index.html` de la raíz es esa versión anterior y deja de servirse cuando Vercel use `dist/`.
 
+## Ubicaciones
+
+Cada propiedad lleva `ubicacion` en `data/propiedades.json`:
+
+- **Edificio o residencial** (`precision`: `edificio` / `residencial`): `texto`, `mapsUrl` (botón «Ver en Google Maps») y `lat`/`lng` con su `fuente`. Se dibuja como punto azul.
+- **Zona aproximada** (`precision`: `zona`): solo `texto` y `zona` (centro del sector y `radio_m`). Se dibuja como área sombreada punteada, sin pin, sin enlace a mapas y con el botón «Consultar ubicación por WhatsApp». No se publican coordenadas del inmueble ni en el HTML ni en los datos estructurados. Así están los terrenos de Arraiján y Chitré, por decisión del propietario: **no agregar sus coordenadas exactas a este repositorio, que es público.**
+
 ## Verificado y pendiente
 
-Verificado en local (móvil 375 px y escritorio): build, 8 fichas, buscador con precio máximo, comparador, galería, calculadora, mapa, mensajes de WhatsApp con referencia y URL, captura de UTM, validación del formulario, eventos de medición en modo depuración, metadatos, URL canónicas, sitemap y robots.
+Verificado en local (móvil 375 px y escritorio): build desde una copia limpia con `npm ci`, 8 fichas, buscador, comparador, galería, calculadora, mapa con pines y zonas, enlaces de Google Maps, mensajes de WhatsApp con nombre, referencia y URL, captura de UTM, metadatos, canónicas, sitemap y robots.
 
-No verificado, requiere cuentas externas:
+Formulario, probado con respuestas simuladas de Formspree (sin envíos reales): validación de nombre y de teléfono o correo, error 422, respuesta 200 con error, fallo de red, triple clic (un solo envío), bloqueo de reenvío idéntico, y evento `generate_lead` solo tras respuesta satisfactoria.
 
-- **Formspree**: no se envió ninguna consulta real; falta confirmar que llega al correo y que el plan acepta los campos nuevos.
-- **GA4 / Clarity**: faltan los IDs; no se ha comprobado la recepción de eventos.
-- **Vercel**: falta confirmar que el proyecto toma `vercel.json` (hoy sirve la raíz sin build).
-- **WhatsApp**: confirmar que `wa.me/5078347509` abre el chat correcto.
-- **Datos**: ver la lista «Datos por confirmar» que imprime el build.
+Pendiente, requiere cuentas externas:
+
+- **Formspree**: prueba real de recepción en el correo (la hace el propietario). El código está validado; la recepción no.
+- **GA4 / Clarity**: sin IDs. Mientras estén vacíos o con formato inválido no se carga ningún script (el build avisa si el formato es incorrecto).
+- **Vercel**: `vercel.json` está en la raíz, `buildCommand` coincide con el script `build` y `outputDirectory` con `dist/`. No hay acceso a los registros de Vercel: falta confirmar el comando ejecutado y el commit desplegado tras el primer deploy de esta rama. El repositorio también tiene GitHub Pages activo, que sirve la raíz sin build (la web anterior).
+- **Arraiján**: la única foto (flyer) y la característica «a 100 m del Metro Cáceres» delatan la ubicación del terreno.
